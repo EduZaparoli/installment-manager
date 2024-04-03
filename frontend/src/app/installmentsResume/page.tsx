@@ -8,9 +8,9 @@ const InstallmentsResume = () => {
 
     const user = {
         fullname: 'Eduardo Zaparoli',
-        documentNumber: '021.909.730-58',
+        documentNumber: '012.984.421-68',
         email: 'edu@gmail.com',
-        phoneNumber: '(54) 9 9661-4677'
+        phoneNumber: '(54) 9 9541-3123'
     }
 
     const installments = [
