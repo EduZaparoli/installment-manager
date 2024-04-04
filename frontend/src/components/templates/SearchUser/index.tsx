@@ -32,7 +32,7 @@ const SearchUser = () => {
                     <Box paddingLeft={'20px'} paddingTop={'8px'}>
                         <Button onClick={handleOpenModal}>Buscar CPF</Button>
                     </Box>
-                    <ModalSearchUser isOpen={isOpen} isClose={handleCloseModal} />
+                    <ModalSearchUser modalTitle="Informe o CPF do cliente" showInput isOpen={isOpen} isClose={handleCloseModal} />
                 </GridItem>
             </Grid>
         </ResponsiveLayout>

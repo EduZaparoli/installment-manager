@@ -3,6 +3,7 @@ import { InstallmentList } from "@/components/organisms/InstallmentList"
 import { CustomerSection } from "@/components/templates/CustomerSection"
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout"
 import { Box, Button, Flex, Text } from "@chakra-ui/react"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export interface InstallmentType {
@@ -22,6 +23,16 @@ const SelectInstallmentsAdvancePage = () => {
         phoneNumber: '(54) 9 9541-3123'
     }
 
+    const router = useRouter()
+
+    const onContinue = () => {
+        router.push('/installmentsResume')
+    }
+
+    const onBack = () => {
+        router.push('/searchUser')
+    }
+
     const installments = [
         {
             number: 2,
@@ -31,7 +42,12 @@ const SelectInstallmentsAdvancePage = () => {
         {
             number: 3,
             date: 'dd/mm/aaaa',
-            value: 100
+            value: 200
+        },
+        {
+            number: 4,
+            date: 'dd/mm/aaaa',
+            value: 300
         },
     ]
 
@@ -59,8 +75,8 @@ const SelectInstallmentsAdvancePage = () => {
                     <Text paddingBottom={'20px'} fontSize={'24px'}>Selecione as parcelas</Text>
                     <InstallmentList installmentsData={installmentsData} checkbox totalValue onCheckboxChange={handleCheckboxChange} />
                     <Flex gap={'16px'} flexDirection={'row'} marginTop={'40px'}>
-                        <Button>Voltar</Button>
-                        <Button disabled={isDisabled}>Continuar</Button>
+                        <Button onClick={onBack}>Voltar</Button>
+                        <Button disabled={isDisabled} onClick={onContinue}>Continuar</Button>
                     </Flex>
                 </Box>
             </Flex>
