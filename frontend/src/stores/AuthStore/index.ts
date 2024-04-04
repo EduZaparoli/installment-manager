@@ -1,6 +1,6 @@
 import { api } from "@/service/APIService"
 
-export const COOKIE_ACCESS_TOKEN_KEY = "INVEST_APP_TOKEN";
+export const COOKIE_ACCESS_TOKEN_KEY = "PARCELADMIN_APP_TOKEN";
 
 export class AuthStore {
 

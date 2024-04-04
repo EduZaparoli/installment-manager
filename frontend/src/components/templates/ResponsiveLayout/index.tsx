@@ -47,7 +47,7 @@ export const ResponsiveLayout = ({ children }: IProps) => {
                 </Stack>
                 <Center paddingBottom={20}>
                     <Stack align={'center'} gap={12}>
-                        <Text fontSize={24}>Invest</Text>
+                        <Text fontSize={24}>ParcelAdmin</Text>
                         <Stack gap={3}>
                             <Button size={'sm'} onClick={toggleColorMode} boxShadow='base' p='1' rounded='md'>
                                 {colorMode === 'light' ? 'Dark' : 'Light'} Theme
