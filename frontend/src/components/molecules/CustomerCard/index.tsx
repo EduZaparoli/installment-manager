@@ -1,4 +1,6 @@
 import { Card } from "@/components/atoms/Card"
+import { formatDocumentNumber } from "@/utils/formatDocumentNumber"
+import { formatCellphoneNumber } from "@/utils/formatPhoneNumber"
 import { Box, Flex, Text } from "@chakra-ui/react"
 
 export interface CustomerCardProps {
@@ -19,7 +21,7 @@ export const CustomerCard = ({ documentNumber, email, fullname, phoneNumber }: C
                     <Flex flexDirection={'row'} gap={'54px'}>
                         <Box>
                             <Text fontWeight={'medium'}>CPF:</Text>
-                            <Text>{documentNumber}</Text>
+                            <Text>{formatDocumentNumber(documentNumber)}</Text>
                         </Box>
                         <Box>
                             <Text fontWeight={'medium'}>E-mail:</Text>
@@ -27,7 +29,7 @@ export const CustomerCard = ({ documentNumber, email, fullname, phoneNumber }: C
                         </Box>
                         <Box>
                             <Text fontWeight={'medium'}>Telefone:</Text>
-                            <Text>{phoneNumber}</Text>
+                            <Text>{formatCellphoneNumber(phoneNumber)}</Text>
                         </Box>
                     </Flex>
                 </Flex>

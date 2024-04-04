@@ -18,9 +18,9 @@ const SelectInstallmentsAdvancePage = () => {
 
     const user = {
         fullname: 'Eduardo Zaparoli',
-        documentNumber: '012.984.421-68',
+        documentNumber: '01298442168',
         email: 'edu@gmail.com',
-        phoneNumber: '(54) 9 9541-3123'
+        phoneNumber: '54995413123'
     }
 
     const router = useRouter()

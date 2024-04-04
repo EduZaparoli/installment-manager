@@ -1,3 +1,4 @@
+import { formatDocumentNumber } from "@/utils/formatDocumentNumber"
 import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -15,7 +16,7 @@ export const ModalSearchUser = ({ isOpen, isClose, modalTitle, showInput = false
     const router = useRouter()
 
     const handleUser = () => {
-        if (documentNumber === '012.984.421-68') {
+        if (formatDocumentNumber(documentNumber) === '012.984.421-68') {
             router.push('/selectInstallmentsAdvance')
         }
     }

@@ -1,3 +1,4 @@
+import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL"
 import { Box, Checkbox, Flex, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 
@@ -42,7 +43,7 @@ export const Installment: React.FC<IProps> = ({ date, number, value, checkbox, c
                     </Box>
                 </Flex>
             </Flex>
-            <Text fontWeight={'medium'} alignSelf={'end'}>{value}</Text>
+            <Text fontWeight={'medium'} alignSelf={'end'}>{formatCurrencyBRL(value)}</Text>
         </Flex>
     )
 }

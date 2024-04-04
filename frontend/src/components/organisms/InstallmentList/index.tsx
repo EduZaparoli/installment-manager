@@ -1,5 +1,6 @@
 import { InstallmentType } from "@/app/selectInstallmentsAdvance/page"
 import { Installment } from "@/components/molecules/Installment"
+import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL"
 import { Flex, Text, useColorModeValue } from "@chakra-ui/react"
 import { useState } from "react"
 
@@ -41,7 +42,7 @@ export const InstallmentList: React.FC<IProps> = ({ installmentsData, checkbox, 
             {totalValue && (
                 <Flex bg={formBackGround} p={'24px'} justifyContent={'space-between'} marginTop={'40px'} borderRadius={'8px'}>
                     <Text fontWeight={'medium'}>Total</Text>
-                    <Text fontWeight={'medium'}>{total}</Text>
+                    <Text fontWeight={'medium'}>{formatCurrencyBRL(total)}</Text>
                 </Flex>
             )}
         </>
