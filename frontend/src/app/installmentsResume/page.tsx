@@ -58,8 +58,8 @@ const InstallmentsResume = () => {
                     <Text paddingBottom={'20px'} fontSize={'24px'}>Resumo das parcelas</Text>
                     <InstallmentList installmentsData={installments} totalValue />
                     <Flex gap={'16px'} flexDirection={'row'} marginTop={'40px'}>
-                        <Button onClick={onBack}>Voltar</Button>
-                        <Button onClick={handleOpenModal}>Confirmar</Button>
+                        <Button colorScheme={'teal'} onClick={onBack}>Voltar</Button>
+                        <Button colorScheme={'teal'} onClick={handleOpenModal}>Confirmar</Button>
                     </Flex>
                 </Box>
             </Flex>

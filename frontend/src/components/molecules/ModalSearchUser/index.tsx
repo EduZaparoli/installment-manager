@@ -1,5 +1,6 @@
+import { themes } from "@/themes/theme-tokens"
 import { formatDocumentNumber } from "@/utils/formatDocumentNumber"
-import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text } from "@chakra-ui/react"
+import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, useColorModeValue } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -11,6 +12,7 @@ interface IProps {
 }
 
 export const ModalSearchUser = ({ isOpen, isClose, modalTitle, showInput = false }: IProps) => {
+    const formBackGround = useColorModeValue(themes.colors.primary.mainprimaryLight, themes.colors.primary.mainPrimaryDark)
     const [documentNumber, setDocumentNumber] = useState('')
     const [email] = useState('edu@gmail.com')
     const router = useRouter()
@@ -25,7 +27,7 @@ export const ModalSearchUser = ({ isOpen, isClose, modalTitle, showInput = false
         <>
             <Modal closeOnEsc size={'md'} isCentered isOpen={isOpen} onClose={isClose}>
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent bgColor={formBackGround}>
                     <ModalHeader>{modalTitle}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
@@ -45,12 +47,12 @@ export const ModalSearchUser = ({ isOpen, isClose, modalTitle, showInput = false
 
                     <ModalFooter>
                         {showInput &&
-                            <Button onClick={handleUser} colorScheme='blue' mr={3}>
+                            <Button colorScheme='teal' onClick={handleUser} mr={3}>
                                 Buscar
                             </Button>
                         }
                         {!showInput &&
-                            <Button onClick={handleUser} colorScheme='blue' mr={3}>
+                            <Button colorScheme='teal' onClick={handleUser} mr={3}>
                                 Enviar
                             </Button>
                         }

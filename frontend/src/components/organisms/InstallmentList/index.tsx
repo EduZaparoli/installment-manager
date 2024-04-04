@@ -1,5 +1,6 @@
 import { InstallmentType } from "@/app/selectInstallmentsAdvance/page"
 import { Installment } from "@/components/molecules/Installment"
+import { themes } from "@/themes/theme-tokens"
 import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL"
 import { Flex, Text, useColorModeValue } from "@chakra-ui/react"
 import { useState } from "react"
@@ -32,7 +33,7 @@ export const InstallmentList: React.FC<IProps> = ({ installmentsData, checkbox, 
         }
     }
 
-    const formBackGround = useColorModeValue("gray.100", "gray.700")
+    const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark)
 
     return (
         <>

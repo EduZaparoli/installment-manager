@@ -1,5 +1,6 @@
-import { Box } from "@chakra-ui/react"
+import { Box, useColorModeValue } from "@chakra-ui/react"
 import { Navbar } from "../../organisms/Navbar";
+import { themes } from "@/themes/theme-tokens";
 
 interface IProps {
   children: React.ReactNode;
@@ -13,10 +14,12 @@ interface IProps {
 
 export const Container = ({ children, align, justifyContent, navbar = false, avatar = false, theme = false, logo = false }: IProps) => {
 
+  const formBackGround = useColorModeValue(themes.colors.primary.mainprimaryLight, themes.colors.primary.mainPrimaryDark)
+
   return (
     <>
       {navbar && <Navbar logo={logo} avatar={avatar} theme={theme} justifyContent={justifyContent} />}
-      <Box height={"92vh"} alignItems={align}>
+      <Box bg={formBackGround} height={"92vh"} alignItems={align}>
         {children}
       </Box>
     </>

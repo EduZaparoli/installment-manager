@@ -75,8 +75,8 @@ const SelectInstallmentsAdvancePage = () => {
                     <Text paddingBottom={'20px'} fontSize={'24px'}>Selecione as parcelas</Text>
                     <InstallmentList installmentsData={installmentsData} checkbox totalValue onCheckboxChange={handleCheckboxChange} />
                     <Flex gap={'16px'} flexDirection={'row'} marginTop={'40px'}>
-                        <Button onClick={onBack}>Voltar</Button>
-                        <Button disabled={isDisabled} onClick={onContinue}>Continuar</Button>
+                        <Button colorScheme={'teal'} onClick={onBack}>Voltar</Button>
+                        <Button colorScheme={'teal'} disabled={isDisabled} onClick={onContinue}>Continuar</Button>
                     </Flex>
                 </Box>
             </Flex>

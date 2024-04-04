@@ -1,4 +1,5 @@
 "use client"
+import { themes } from "@/themes/theme-tokens";
 import { Button, Flex, Heading, Input, useColorModeValue } from "@chakra-ui/react"
 
 interface IProps {
@@ -11,7 +12,7 @@ interface IProps {
 
 export const LoginContainer = ({ email, password, onEmail, onPassword, onContinue }: IProps) => {
 
-  const formBackGround = useColorModeValue("gray.100", "gray.700")
+  const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark)
 
   return (
     <Flex direction={"column"} background={formBackGround} p={24} rounded={24} margin={5}>

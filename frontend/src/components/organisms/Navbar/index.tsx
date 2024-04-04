@@ -1,3 +1,4 @@
+import { themes } from "@/themes/theme-tokens";
 import { Avatar, Box, Button, Flex, Image, WrapItem, useColorMode, useColorModeValue } from "@chakra-ui/react"
 
 interface IProps {
@@ -9,7 +10,7 @@ interface IProps {
 
 export const Navbar = ({ avatar, theme, logo, justifyContent = 'space-between' }: IProps) => {
   const { colorMode, toggleColorMode } = useColorMode()
-  const formBackGround = useColorModeValue("gray.200", "gray.700")
+  const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark)
 
   return (
     <Flex height={'10vh'} alignItems={"center"} justifyContent={justifyContent} paddingLeft={16} paddingRight={16} background={formBackGround}>
@@ -21,7 +22,7 @@ export const Navbar = ({ avatar, theme, logo, justifyContent = 'space-between' }
       <WrapItem alignItems={'center'}>
         {theme &&
           <Box>
-            <Button size={'sm'} onClick={toggleColorMode} boxShadow='base' p='1' rounded='md'>
+            <Button colorScheme="teal" size={'sm'} onClick={toggleColorMode} boxShadow='base' p='1' rounded='md'>
               {colorMode === 'light' ? 'Dark' : 'Light'} Theme
             </Button>
           </Box>

@@ -31,7 +31,7 @@ export const Installment: React.FC<IProps> = ({ date, number, value, checkbox, c
             <Flex flexDir={'column'}>
                 <Flex alignSelf={'center'}>
                     {checkbox && (
-                        <Checkbox isChecked={isChecked} onChange={handleCheckboxChange} />
+                        <Checkbox colorScheme={'teal'} isChecked={isChecked} onChange={handleCheckboxChange} />
                     )}
                     <Box paddingLeft={checkbox ? '15px' : '0px'}>
                         <Text fontWeight={'medium'}>

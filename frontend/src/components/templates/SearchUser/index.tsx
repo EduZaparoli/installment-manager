@@ -30,7 +30,7 @@ const SearchUser = () => {
                         <Text>Para acessar a área de atendimento, você precisa informar o CPF do cliente</Text>
                     </Stack>
                     <Box paddingLeft={'20px'} paddingTop={'8px'}>
-                        <Button onClick={handleOpenModal}>Buscar CPF</Button>
+                        <Button colorScheme='teal' onClick={handleOpenModal}>Buscar CPF</Button>
                     </Box>
                     <ModalSearchUser modalTitle="Informe o CPF do cliente" showInput isOpen={isOpen} isClose={handleCloseModal} />
                 </GridItem>
