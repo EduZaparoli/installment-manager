@@ -29,7 +29,13 @@
 ## Installation
 
 ```bash
-$ npm install
+$ npm i
+```
+
+## Generate Prima Client
+
+```bash
+npx prisma generate
 ```
 
 ## Running the app
