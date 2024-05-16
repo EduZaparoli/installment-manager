@@ -19,7 +19,7 @@ export const Container = ({ children, align, justifyContent, navbar = false, ava
   return (
     <>
       {navbar && <Navbar logo={logo} avatar={avatar} theme={theme} justifyContent={justifyContent} />}
-      <Box bg={formBackGround} height={"92vh"} alignItems={align}>
+      <Box bg={formBackGround} alignItems={align}>
         {children}
       </Box>
     </>

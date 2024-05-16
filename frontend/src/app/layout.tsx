@@ -12,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ overflow: 'hidden' }}>
+      <body>
         <ChakraProvider>
           {children}
         </ChakraProvider>
