@@ -1,15 +1,35 @@
-import axios, { AxiosInstance, RawAxiosRequestHeaders } from 'axios';
+import { AxiosInstance, RawAxiosRequestHeaders } from 'axios';
 import apiClientService from '../APIClientService';
 import * as types from './types';
 
 class API {
   constructor(private api: AxiosInstance) { }
 
-  public getClient = async (): Promise<types.User> => {
-    const { data } = await this.api.get<types.User>('http://localhost:5000/user/all', {
-      headers: this.baseHeaders()
-    });
+  public postUser = async (firstName: string, lastName: string, email: string, password: string): Promise<types.RegisterUser> => {
+    const { data } = await this.api.post<types.RegisterUser>('http://localhost:5000/user',
+      {
+        firstName,
+        lastName,
+        email,
+        password
+      },
+      {
+        headers: this.baseHeaders()
+      }
+    );
+    return data;
+  };
 
+  public resetPasswordUser = async (email: string, newPassword: string): Promise<types.ResetPassword> => {
+    const { data } = await this.api.patch<types.ResetPassword>('http://localhost:5000/user/reset-password',
+      {
+        email,
+        newPassword
+      },
+      {
+        headers: this.baseHeaders()
+      }
+    );
     return data;
   };
 
