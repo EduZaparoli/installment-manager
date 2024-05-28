@@ -10,10 +10,16 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ResetUserPasswordDto } from './dto/reset-user-password';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
+
+  @Patch('reset-password')
+  async resetPassword(@Body() updatePasswordDto: ResetUserPasswordDto) {
+    return this.userService.resetPassword(updatePasswordDto);
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
