@@ -1,8 +1,10 @@
 import { api } from "@/service/APIService"
+import { useToast } from "@chakra-ui/react";
 
 export const COOKIE_ACCESS_TOKEN_KEY = "PARCELADMIN_APP_TOKEN";
 
 export class AuthStore {
+    public toast = useToast()
 
     public fetchAccessToken = async (
         email: string,
@@ -13,6 +15,14 @@ export class AuthStore {
             const token = await api.getAuthorizationToken(email, password)
             this.setCookie(COOKIE_ACCESS_TOKEN_KEY, token.access_token)
         } catch (error) {
+            this.toast({
+                title: 'Erro',
+                description: "E-mail ou senha incorretos.",
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: "top"
+            })
             console.log(error)
         }
     }

@@ -1,11 +1,15 @@
 export interface APIResponse<APIResponse> {
   data: APIResponse;
-  message: string;
-  status: string;
+  error?: string;
+  message?: string;
+  statusCode?: number;
 }
 
 export interface AccessToken {
-  access_token: string
+  access_token: string;
+  error?: string;
+  message?: string;
+  statusCode?: number;
 }
 
 export interface User {
