@@ -1,91 +1,105 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ResetUserPasswordDto } from './dto/reset-user-password';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import * as bcrypt from "bcrypt";
+import { ResetUserPasswordDto } from "./dto/reset-user-password";
+import { catchError, firstValueFrom } from "rxjs";
+import { AxiosError } from "axios";
+import { HttpService } from "@nestjs/axios";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { Client } from "./entities/client.entity";
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) { }
+	constructor(private readonly prisma: PrismaService, private readonly httpService: HttpService) {}
 
-  async resetPassword(updatePasswordDto: ResetUserPasswordDto) {
-    const { email, newPassword } = updatePasswordDto;
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+	async findByDocumentNumber(documentNumber: string): Promise<Client> {
+		const { data } = await firstValueFrom(
+			this.httpService.get<Client>(`http://localhost:3001/client/documentNumber/${documentNumber}`).pipe(
+				catchError((error: AxiosError) => {
+					console.log(error);
+					throw error;
+				}),
+			),
+		);
+		return data;
+	}
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+	async resetPassword(updatePasswordDto: ResetUserPasswordDto) {
+		const { email, newPassword } = updatePasswordDto;
+		const user = await this.prisma.user.findUnique({
+			where: { email },
+		});
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+		if (!user) {
+			throw new NotFoundException("User not found");
+		}
 
-    await this.prisma.user.update({
-      where: { email },
-      data: { password: hashedPassword },
-    });
+		const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    return { message: 'Password updated successfully' };
-  }
+		await this.prisma.user.update({
+			where: { email },
+			data: { password: hashedPassword },
+		});
 
-  async create(createUserDto: CreateUserDto) {
-    const data = {
-      ...createUserDto,
-      password: await bcrypt.hash(createUserDto.password, 10),
-    };
+		return { message: "Password updated successfully" };
+	}
 
-    const createdUser = await this.prisma.user.create({
-      data,
-    });
+	async create(createUserDto: CreateUserDto) {
+		const data = {
+			...createUserDto,
+			password: await bcrypt.hash(createUserDto.password, 10),
+		};
 
-    return {
-      ...createdUser,
-      password: undefined,
-    };
-  }
+		const createdUser = await this.prisma.user.create({
+			data,
+		});
 
-  async findAll() {
-    return await this.prisma.user.findMany();
-  }
+		return {
+			...createdUser,
+			password: undefined,
+		};
+	}
+	async findAll() {
+		return await this.prisma.user.findMany();
+	}
 
-  async findOne(id: number) {
-    return await this.prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-  }
+	async findOne(id: number) {
+		return await this.prisma.user.findUnique({
+			where: {
+				id,
+			},
+		});
+	}
 
-  async findByEmail(email: string) {
-    return await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-  }
+	async findByEmail(email: string) {
+		return await this.prisma.user.findUnique({
+			where: {
+				email,
+			},
+		});
+	}
+	async update(id: number, updateUserDto: UpdateUserDto) {
+		const data = {
+			...updateUserDto,
+			password: await bcrypt.hash(updateUserDto.password, 10),
+		};
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const data = {
-      ...updateUserDto,
-      password: await bcrypt.hash(updateUserDto.password, 10),
-    };
+		return await this.prisma.user.update({
+			where: {
+				id,
+			},
+			data,
+		});
+	}
 
-    return await this.prisma.user.update({
-      where: {
-        id,
-      },
-      data,
-    });
-  }
+	async remove(id: number) {
+		await this.prisma.user.delete({
+			where: {
+				id,
+			},
+		});
 
-  async remove(id: number) {
-    await this.prisma.user.delete({
-      where: {
-        id,
-      },
-    });
-
-    return 'deleted';
-  }
+		return "deleted";
+	}
 }

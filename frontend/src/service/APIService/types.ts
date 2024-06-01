@@ -1,26 +1,33 @@
 export interface APIResponse<APIResponse> {
-  data: APIResponse;
-  message: string;
-  status: string;
+	data: APIResponse;
+	message: string;
+	status: string;
 }
 
 export interface AccessToken {
-  access_token: string
+	access_token: string;
 }
 
 export interface User {
-  email: string;
-  password: string;
+	email: string;
+	password: string;
 }
 
 export interface RegisterUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	password: string;
 }
 
 export interface ResetPassword {
-  email: string;
-  newPassword: string;
+	email: string;
+	newPassword: string;
+}
+
+export interface Client {
+	documentNumber: string;
+	name: string;
+	email: string;
+	cellPhone: string;
 }

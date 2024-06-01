@@ -1,53 +1,51 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ResetUserPasswordDto } from './dto/reset-user-password';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { UserService } from "./user.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { ResetUserPasswordDto } from "./dto/reset-user-password";
+import { Client } from "./entities/client.entity";
 
-@Controller('user')
+@Controller("user")
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+	constructor(private readonly userService: UserService) {}
 
-  @Patch('reset-password')
-  async resetPassword(@Body() updatePasswordDto: ResetUserPasswordDto) {
-    return this.userService.resetPassword(updatePasswordDto);
-  }
+	@Get("documentNumber/:documentNumber")
+	async findByDocumentNumber(@Param("documentNumber") documentNumber: string): Promise<Client> {
+		return this.userService.findByDocumentNumber(documentNumber);
+	}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+	@Patch("reset-password")
+	async resetPassword(@Body() updatePasswordDto: ResetUserPasswordDto) {
+		return this.userService.resetPassword(updatePasswordDto);
+	}
 
-  @Get('all')
-  findAll() {
-    return this.userService.findAll();
-  }
+	@Post()
+	create(@Body() createUserDto: CreateUserDto) {
+		return this.userService.create(createUserDto);
+	}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
+	@Get("all")
+	findAll() {
+		return this.userService.findAll();
+	}
 
-  @Get('email/:email')
-  findByEmail(@Param('email') email: string) {
-    return this.userService.findByEmail(email);
-  }
+	@Get(":id")
+	findOne(@Param("id") id: string) {
+		return this.userService.findOne(+id);
+	}
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+	@Get("email/:email")
+	findByEmail(@Param("email") email: string) {
+		return this.userService.findByEmail(email);
+	}
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+	@Patch(":id")
+	update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
+		return this.userService.update(+id, updateUserDto);
+	}
+
+	@Delete(":id")
+	remove(@Param("id") id: string) {
+		return this.userService.remove(+id);
+	}
 }
