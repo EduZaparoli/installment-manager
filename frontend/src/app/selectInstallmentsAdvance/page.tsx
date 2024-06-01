@@ -2,10 +2,11 @@
 import { InstallmentList } from "@/components/organisms/InstallmentList";
 import { CustomerSection } from "@/components/templates/CustomerSection";
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { useStore } from "@/stores/storeProvider";
+import { Box, Button, Flex, Select, Text } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export interface InstallmentType {
 	number: number;
@@ -15,9 +16,11 @@ export interface InstallmentType {
 }
 
 const SelectInstallmentsAdvancePage = observer(() => {
-	const [isDisabled, setIsDisabled] = useState(true);
-
 	const router = useRouter();
+	const { clientStore } = useStore();
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
+	const [installmentsData, setInstallmentsData] = useState<InstallmentType[]>([]);
 
 	const onContinue = () => {
 		router.push("/installmentsResume");
@@ -27,29 +30,38 @@ const SelectInstallmentsAdvancePage = observer(() => {
 		router.push("/searchUser");
 	};
 
-	const installments = [
-		{
-			number: 2,
-			date: "dd/mm/aaaa",
-			value: 100,
-		},
-		{
-			number: 3,
-			date: "dd/mm/aaaa",
-			value: 200,
-		},
-		{
-			number: 4,
-			date: "dd/mm/aaaa",
-			value: 300,
-		},
-	];
+	const productNames = clientStore.allPurchases.value.flatMap((purchase) =>
+		purchase.products.map((product) => ({
+			id: product.product.id,
+			name: product.product.name,
+		})),
+	);
 
-	const [installmentsData, setInstallmentsData] = useState<InstallmentType[] | []>(installments);
+	useEffect(() => {
+		const mappedInstallments: InstallmentType[] = clientStore.installments.value.map((installment) => ({
+			number: installment.installmentNumber,
+			date: new Date(installment.dueDate).toLocaleDateString(),
+			value: installment.installmentValue,
+		}));
+		setInstallmentsData(mappedInstallments);
+	}, [clientStore.installments.value]);
+
+	useEffect(() => {
+		if (selectedProduct !== null) {
+			clientStore.fetchClientInstallmentsByProduct(selectedProduct);
+		}
+	}, [selectedProduct]);
+
+	const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const productId = parseInt(event.target.value, 10);
+		setSelectedProduct(productId);
+		setInstallmentsData([]);
+		setIsDisabled(true);
+	};
 
 	const handleCheckboxChange = (installments: Array<InstallmentType>) => {
 		setInstallmentsData(installments);
-		if (installments.find((installments) => installments.checkboxEnabled)) {
+		if (installments.find((installment) => installment.checkboxEnabled)) {
 			setIsDisabled(false);
 		} else {
 			setIsDisabled(true);
@@ -62,8 +74,17 @@ const SelectInstallmentsAdvancePage = observer(() => {
 			<Flex flexDirection={"column"} w={"100%"} align={"center"} alignSelf={"center"} margin={"40px 0 104px 0"}>
 				<Box width={"40%"}>
 					<Text paddingBottom={"20px"} fontSize={"24px"}>
-						Selecione as parcelas
+						Selecione o produto e as parcelas
 					</Text>
+					<Box pb={"20px"}>
+						<Select variant="outline" placeholder="Selecione um produto" onChange={handleChange}>
+							{productNames.map((product) => (
+								<option key={product.id} value={product.id.toString()}>
+									{product.name}
+								</option>
+							))}
+						</Select>
+					</Box>
 					<InstallmentList
 						installmentsData={installmentsData}
 						checkbox

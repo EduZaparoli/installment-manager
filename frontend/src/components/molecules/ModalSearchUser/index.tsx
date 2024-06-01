@@ -38,6 +38,7 @@ export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInpu
 	const handleUser = async () => {
 		try {
 			await clientStore.fetchGetClient(documentNumber);
+			await clientStore.fetchClientAllPurchases(documentNumber);
 			router.push("/selectInstallmentsAdvance");
 		} catch (error) {
 			console.log(error);
