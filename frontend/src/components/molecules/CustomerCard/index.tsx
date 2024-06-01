@@ -1,16 +1,11 @@
 import { Card } from "@/components/atoms/Card";
-import { Dropdown } from "@/components/atoms/Dropdown";
 import { useStore } from "@/stores/storeProvider";
 import { formatDocumentNumber } from "@/utils/formatDocumentNumber";
 import { formatCellphoneNumber } from "@/utils/formatPhoneNumber";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 
-export interface CustomerCardProps {
-	dropdown?: boolean;
-}
-
-export const CustomerCard = observer(({ dropdown = false }: CustomerCardProps) => {
+export const CustomerCard = observer(() => {
 	const { clientStore } = useStore();
 
 	return (
@@ -35,11 +30,6 @@ export const CustomerCard = observer(({ dropdown = false }: CustomerCardProps) =
 						</Box>
 					</Flex>
 				</Flex>
-				{dropdown && (
-					<Flex>
-						<Dropdown />
-					</Flex>
-				)}
 			</Flex>
 		</Card>
 	);

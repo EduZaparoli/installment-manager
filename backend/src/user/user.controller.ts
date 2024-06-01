@@ -3,7 +3,7 @@ import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ResetUserPasswordDto } from "./dto/reset-user-password";
-import { Client } from "./entities/client.entity";
+import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
 
 @Controller("user")
 export class UserController {
@@ -12,6 +12,16 @@ export class UserController {
 	@Get("documentNumber/:documentNumber")
 	async findByDocumentNumber(@Param("documentNumber") documentNumber: string): Promise<Client> {
 		return this.userService.findByDocumentNumber(documentNumber);
+	}
+
+	@Get(":documentNumber/purchases/all")
+	async findAllPurchases(@Param("documentNumber") documentNumber: string): Promise<PurchasesResponse> {
+		return this.userService.findAllPurchases(documentNumber);
+	}
+
+	@Get(":productId/installments")
+	async findInstallmentsByProduct(@Param("productId") productId: number): Promise<InstallmentsResponse> {
+		return this.userService.findInstallmentsByProduct(productId);
 	}
 
 	@Patch("reset-password")

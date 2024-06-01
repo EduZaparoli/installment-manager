@@ -12,6 +12,26 @@ class API {
 		return data;
 	};
 
+	public getClientAllPurchases = async (documentNumber: string): Promise<types.PurchasesResponse> => {
+		const { data } = await this.api.get<types.PurchasesResponse>(
+			`http://localhost:5000/user/${documentNumber}/purchases/all`,
+			{
+				headers: this.baseHeaders(),
+			},
+		);
+		return data;
+	};
+
+	public getInstallmentsByProduct = async (productId: number): Promise<types.InstallmentsResponse> => {
+		const { data } = await this.api.get<types.InstallmentsResponse>(
+			`http://localhost:5000/user/${productId}/installments`,
+			{
+				headers: this.baseHeaders(),
+			},
+		);
+		return data;
+	};
+
 	public postUser = async (
 		firstName: string,
 		lastName: string,
