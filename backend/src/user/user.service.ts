@@ -7,7 +7,7 @@ import { catchError, firstValueFrom } from "rxjs";
 import { AxiosError } from "axios";
 import { HttpService } from "@nestjs/axios";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { Client } from "./entities/client.entity";
+import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
 
 @Injectable()
 export class UserService {
@@ -16,6 +16,30 @@ export class UserService {
 	async findByDocumentNumber(documentNumber: string): Promise<Client> {
 		const { data } = await firstValueFrom(
 			this.httpService.get<Client>(`http://localhost:3001/client/documentNumber/${documentNumber}`).pipe(
+				catchError((error: AxiosError) => {
+					console.log(error);
+					throw error;
+				}),
+			),
+		);
+		return data;
+	}
+
+	async findAllPurchases(documentNumber: string): Promise<PurchasesResponse> {
+		const { data } = await firstValueFrom(
+			this.httpService.get<PurchasesResponse>(`http://localhost:3001/client/${documentNumber}/purchases/all`).pipe(
+				catchError((error: AxiosError) => {
+					console.log(error);
+					throw error;
+				}),
+			),
+		);
+		return data;
+	}
+
+	async findInstallmentsByProduct(productId: number): Promise<InstallmentsResponse> {
+		const { data } = await firstValueFrom(
+			this.httpService.get<InstallmentsResponse>(`http://localhost:3001/client/${productId}/installments`).pipe(
 				catchError((error: AxiosError) => {
 					console.log(error);
 					throw error;
