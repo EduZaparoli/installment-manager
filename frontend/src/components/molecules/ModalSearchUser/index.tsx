@@ -32,7 +32,6 @@ export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInpu
 	);
 	const { clientStore } = useStore();
 	const [documentNumber, setDocumentNumber] = useState("");
-	const [email] = useState("edu@gmail.com");
 	const router = useRouter();
 
 	const handleUser = async () => {
@@ -53,7 +52,7 @@ export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInpu
 					<ModalHeader>{modalTitle}</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody>
-						{showInput && (
+						{showInput ? (
 							<Stack gap={5}>
 								<Text>Digite o CPF do cliente que deseja buscar</Text>
 								<Input
@@ -62,22 +61,20 @@ export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInpu
 									placeholder="CPF do cliente"
 								/>
 							</Stack>
-						)}
-						{!showInput && (
+						) : (
 							<Stack gap={"5px"}>
 								<Text>O boleto de pagamento vai ser enviado para o e-mail: </Text>
-								<Text fontWeight={"medium"}>{email}</Text>
+								<Text fontWeight={"medium"}>{clientStore.client.value?.email}</Text>
 							</Stack>
 						)}
 					</ModalBody>
 
 					<ModalFooter>
-						{showInput && (
+						{showInput ? (
 							<Button colorScheme="teal" onClick={handleUser} mr={3}>
 								Buscar
 							</Button>
-						)}
-						{!showInput && (
+						) : (
 							<Button colorScheme="teal" onClick={handleUser} mr={3}>
 								Enviar
 							</Button>
