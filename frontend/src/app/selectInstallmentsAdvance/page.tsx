@@ -23,6 +23,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 	const [installmentsData, setInstallmentsData] = useState<InstallmentType[]>([]);
 
 	const onContinue = () => {
+		clientStore.setSelectedInstallments(installmentsData.filter((inst) => inst.checkboxEnabled));
 		router.push("/installmentsResume");
 	};
 
@@ -85,12 +86,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 							))}
 						</Select>
 					</Box>
-					<InstallmentList
-						installmentsData={installmentsData}
-						checkbox
-						totalValue
-						onCheckboxChange={handleCheckboxChange}
-					/>
+					<InstallmentList installmentsData={installmentsData} checkbox onCheckboxChange={handleCheckboxChange} />
 					<Flex gap={"16px"} flexDirection={"row"} marginTop={"40px"}>
 						<Button colorScheme={"teal"} onClick={onBack}>
 							Voltar

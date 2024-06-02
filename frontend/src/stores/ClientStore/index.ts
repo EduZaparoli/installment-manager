@@ -1,21 +1,25 @@
+import { InstallmentType } from "@/app/selectInstallmentsAdvance/page";
 import { api, apiTypes } from "@/service/APIService";
 import { AttributeShelf } from "@/shelves/AttributeShelf";
-import { action, makeObservable, observable } from "mobx";
+import { makeObservable } from "mobx";
 
 export class ClientStore {
 	public client = new AttributeShelf<apiTypes.Client | null>(null);
 	public allPurchases = new AttributeShelf<apiTypes.PurchasesResponse>([]);
 	public installments = new AttributeShelf<apiTypes.InstallmentsResponse>([]);
+	public selectedInstallments = new AttributeShelf<InstallmentType[]>([]);
+	public installmentsTotalValue = new AttributeShelf<number | null>(null);
 
 	constructor() {
-		makeObservable(this, {
-			client: observable,
-			allPurchases: observable,
-			installments: observable,
-			fetchGetClient: action,
-			fetchClientAllPurchases: action,
-			fetchClientInstallmentsByProduct: action,
-		});
+		makeObservable(this);
+	}
+
+	setSelectedInstallments(installments: InstallmentType[]) {
+		this.selectedInstallments.set(installments);
+	}
+
+	setInstallmentsTotalValue(totalValue: number) {
+		this.installmentsTotalValue.set(totalValue);
 	}
 
 	public fetchGetClient = async (documentNumber: string): Promise<void> => {
