@@ -5,6 +5,17 @@ import * as types from "./types";
 class API {
 	constructor(private api: AxiosInstance) {}
 
+	public updateInstallments = async (purchaseId: number, installments: types.InstallmentsResponse[]): Promise<any> => {
+		const { data } = await this.api.put<any>(
+			`http://localhost:5000/user/updateInstallments/${purchaseId}`,
+			{ installments },
+			{
+				headers: this.baseHeaders(),
+			},
+		);
+		return data;
+	};
+
 	public getClient = async (documentNumber: string): Promise<types.Client> => {
 		const { data } = await this.api.get<types.Client>(`http://localhost:5000/user/documentNumber/${documentNumber}`, {
 			headers: this.baseHeaders(),

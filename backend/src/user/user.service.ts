@@ -13,6 +13,18 @@ import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/clie
 export class UserService {
 	constructor(private readonly prisma: PrismaService, private readonly httpService: HttpService) {}
 
+	async updateInstallments(purchaseId: number, installments: any[]): Promise<any> {
+		const { data } = await firstValueFrom(
+			this.httpService.put<any>(`http://localhost:3001/client/updateInstallments/${purchaseId}`, { installments }).pipe(
+				catchError((error: AxiosError) => {
+					console.log(error);
+					throw error;
+				}),
+			),
+		);
+		return data;
+	}
+
 	async findByDocumentNumber(documentNumber: string): Promise<Client> {
 		const { data } = await firstValueFrom(
 			this.httpService.get<Client>(`http://localhost:3001/client/documentNumber/${documentNumber}`).pipe(

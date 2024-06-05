@@ -3,6 +3,7 @@ import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 import { InstallmentList } from "@/components/organisms/InstallmentList";
 import { CustomerSection } from "@/components/templates/CustomerSection";
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
+import { api } from "@/service/APIService";
 import { useStore } from "@/stores/storeProvider"; // Alterado para usar storeProvider
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,10 @@ const InstallmentsResume = () => {
 	const selectedInstallments = clientStore.selectedInstallments;
 
 	const [isOpen, setIsOpen] = useState(false);
+
+	const handleConfirm = () => {
+		api.updateInstallments(purchaseId, installmentsData);
+	};
 
 	const handleOpenModal = () => {
 		setIsOpen(true);
