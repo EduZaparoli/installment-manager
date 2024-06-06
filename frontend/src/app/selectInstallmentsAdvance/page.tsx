@@ -2,6 +2,7 @@
 import { InstallmentList } from "@/components/organisms/InstallmentList";
 import { CustomerSection } from "@/components/templates/CustomerSection";
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
+import { TypeInstallmentEnum } from "@/enum/installment";
 import { useStore } from "@/stores/storeProvider";
 import { Box, Button, Flex, Select, Text } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
@@ -9,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export interface InstallmentType {
+	purchaseId: number;
 	number: number;
 	date: string;
 	value: number;
@@ -39,11 +41,15 @@ const SelectInstallmentsAdvancePage = observer(() => {
 	);
 
 	useEffect(() => {
-		const mappedInstallments: InstallmentType[] = clientStore.installments.value.map((installment) => ({
-			number: installment.installmentNumber,
-			date: new Date(installment.dueDate).toLocaleDateString(),
-			value: installment.installmentValue,
-		}));
+		const mappedInstallments: InstallmentType[] = clientStore.installments.value
+			.filter((installment) => installment.status !== TypeInstallmentEnum.STATUS_PENDING)
+			.map((installment) => ({
+				purchaseId: installment.purchaseId,
+				number: installment.installmentNumber,
+				date: new Date(installment.dueDate).toLocaleDateString(),
+				value: installment.installmentValue,
+				status: installment.status,
+			}));
 		setInstallmentsData(mappedInstallments);
 	}, [clientStore.installments.value]);
 

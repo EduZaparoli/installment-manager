@@ -63,7 +63,13 @@ interface Installment {
 	installmentValue: number;
 	dueDate: string;
 	paymentDate: string | null;
+	status: string | null;
 	purchase: Purchase;
+}
+
+export interface UpdateInstallments {
+	installmentNumbers: number[];
+	status: string;
 }
 
 export type InstallmentsResponse = Installment[];
