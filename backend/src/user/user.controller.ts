@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -10,8 +10,12 @@ export class UserController {
 	constructor(private readonly userService: UserService) {}
 
 	@Put("updateInstallments/:purchaseId")
-	async updateInstallments(@Param("purchaseId") purchaseId: number, @Body() updateInstallmentsDto: any) {
-		return this.userService.updateInstallments(purchaseId, updateInstallmentsDto.installments);
+	async updateInstallments(
+		@Param("purchaseId", ParseIntPipe) purchaseId: number,
+		@Body() body: { installmentNumbers: number[]; status: string },
+	) {
+		const { installmentNumbers, status } = body;
+		return this.userService.updateInstallments(purchaseId, installmentNumbers, status);
 	}
 
 	@Get("documentNumber/:documentNumber")
