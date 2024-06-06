@@ -3,8 +3,9 @@ import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 import { InstallmentList } from "@/components/organisms/InstallmentList";
 import { CustomerSection } from "@/components/templates/CustomerSection";
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
+import { TypeInstallmentEnum } from "@/enum/installment";
 import { api } from "@/service/APIService";
-import { useStore } from "@/stores/storeProvider"; // Alterado para usar storeProvider
+import { useStore } from "@/stores/storeProvider";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,12 +13,20 @@ import { useState } from "react";
 const InstallmentsResume = () => {
 	const router = useRouter();
 	const { clientStore } = useStore();
-	const selectedInstallments = clientStore.selectedInstallments;
+	const selectedInstallments = clientStore.selectedInstallments.value;
 
 	const [isOpen, setIsOpen] = useState(false);
 
-	const handleConfirm = () => {
-		api.updateInstallments(purchaseId, installmentsData);
+	const handleConfirm = async () => {
+		const purchaseId = selectedInstallments[0]?.purchaseId;
+		const installmentNumbers = selectedInstallments.map((installment) => installment.number);
+		const status = TypeInstallmentEnum.STATUS_PENDING;
+
+		try {
+			await api.updateInstallments(purchaseId, installmentNumbers, status);
+		} catch (error) {
+			console.error("Error updating installments:", error);
+		}
 	};
 
 	const handleOpenModal = () => {
@@ -33,7 +42,8 @@ const InstallmentsResume = () => {
 		router.push("/selectInstallmentsAdvance");
 	};
 
-	const installmentsData = selectedInstallments.value.map((installment) => ({
+	const installmentsData = selectedInstallments.map((installment) => ({
+		purchaseId: installment.purchaseId,
 		number: installment.number,
 		date: installment.date,
 		value: installment.value,
@@ -52,7 +62,7 @@ const InstallmentsResume = () => {
 						<Button colorScheme={"teal"} onClick={onBack}>
 							Voltar
 						</Button>
-						<Button colorScheme={"teal"} onClick={handleOpenModal}>
+						<Button colorScheme={"teal"} onClick={handleConfirm}>
 							Confirmar
 						</Button>
 					</Flex>

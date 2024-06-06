@@ -67,5 +67,10 @@ interface Installment {
 	purchase: Purchase;
 }
 
+export interface UpdateInstallments {
+	installmentNumbers: number[];
+	status: string;
+}
+
 export type InstallmentsResponse = Installment[];
 export type PurchasesResponse = Purchase[];

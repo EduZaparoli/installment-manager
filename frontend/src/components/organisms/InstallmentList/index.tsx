@@ -3,7 +3,7 @@ import { Installment } from "@/components/molecules/Installment";
 import { useStore } from "@/stores/storeProvider";
 import { themes } from "@/themes/theme-tokens";
 import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL";
-import { Flex, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import { useState } from "react";
 
 interface IProps {
@@ -39,17 +39,23 @@ export const InstallmentList: React.FC<IProps> = ({ installmentsData, checkbox, 
 
 	return (
 		<>
-			{installmentsData.map((installment, index) => (
-				<Installment
-					key={index}
-					number={installment.number}
-					date={installment.date}
-					value={installment.value}
-					onCheckboxChange={(isChecked) => handleCheckbox(isChecked, index)}
-					checkboxEnabled={installment.checkboxEnabled}
-					checkbox={checkbox}
-				/>
-			))}
+			{installmentsData.length > 0 ? (
+				installmentsData.map((installment, index) => (
+					<Installment
+						key={index}
+						number={installment.number}
+						date={installment.date}
+						value={installment.value}
+						onCheckboxChange={(isChecked) => handleCheckbox(isChecked, index)}
+						checkboxEnabled={installment.checkboxEnabled}
+						checkbox={checkbox}
+					/>
+				))
+			) : (
+				<Box>
+					<Text>Este produto não tem parcelas</Text>
+				</Box>
+			)}
 			<Flex bg={formBackGround} p={"24px"} justifyContent={"space-between"} marginTop={"40px"} borderRadius={"8px"}>
 				<Text fontWeight={"medium"}>Total</Text>
 				<Text fontWeight={"medium"}>{formatCurrencyBRL(clientStore.installmentsTotalValue.value ?? 0)}</Text>
