@@ -63,6 +63,7 @@ interface Installment {
 	installmentValue: number;
 	dueDate: string;
 	paymentDate: string | null;
+	status: string | null;
 	purchase: Purchase;
 }
 
