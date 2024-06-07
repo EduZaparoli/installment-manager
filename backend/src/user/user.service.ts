@@ -8,10 +8,38 @@ import { AxiosError } from "axios";
 import { HttpService } from "@nestjs/axios";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Boleto = require("node-boleto").Boleto;
 
 @Injectable()
 export class UserService {
 	constructor(private readonly prisma: PrismaService, private readonly httpService: HttpService) {}
+
+	generatePaymentSlip(totalAmount: number, customerInfo: any) {
+		const boleto = new Boleto({
+			banco: "bradesco",
+			data_emissao: new Date(),
+			data_vencimento: new Date(new Date().getTime() + 5 * 24 * 3600 * 1000),
+			valor: totalAmount,
+			nosso_numero: "12345678",
+			numero_documento: "1234",
+			cedente: "Your Company",
+			cedente_cnpj: "00.000.000/0000-00",
+			agencia: "0000",
+			codigo_cedente: "12345",
+			carteira: "25",
+			pagador: customerInfo,
+			local_de_pagamento: "Pague preferencialmente no Bradesco",
+		});
+
+		console.log("Linha digitável: " + boleto["linha_digitavel"]);
+
+		return new Promise((resolve) => {
+			boleto.renderHTML((html: string) => {
+				resolve({ html });
+			});
+		});
+	}
 
 	async updateInstallments(purchaseId: number, installmentNumbers: number[], status: string): Promise<string> {
 		const { data } = await firstValueFrom(

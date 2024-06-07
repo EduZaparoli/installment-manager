@@ -72,5 +72,10 @@ export interface UpdateInstallments {
 	status: string;
 }
 
+export interface PaymentSlip {
+	totalAmount: number;
+	customerInfo: any;
+}
+
 export type InstallmentsResponse = Installment[];
 export type PurchasesResponse = Purchase[];
