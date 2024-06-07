@@ -1,15 +1,30 @@
 import { InstallmentType } from "@/app/selectInstallmentsAdvance/page";
 import { api, apiTypes } from "@/service/APIService";
+import { CustomerInfo } from "@/service/APIService/types";
 import { AttributeShelf } from "@/shelves/AttributeShelf";
 import { makeObservable } from "mobx";
 
 export class ClientStore {
-	public client = new AttributeShelf<apiTypes.Client | null>(null);
+	public client = new AttributeShelf<apiTypes.Client>({
+		id: 0,
+		name: "",
+		documentNumber: "",
+		cellPhone: "",
+		email: "",
+		address: {
+			city: "",
+			neighborhood: "",
+			number: "",
+			postalCode: "",
+			state: "",
+			street: "",
+		},
+	});
 	public allPurchases = new AttributeShelf<apiTypes.PurchasesResponse>([]);
 	public installments = new AttributeShelf<apiTypes.InstallmentsResponse>([]);
 	public selectedInstallments = new AttributeShelf<InstallmentType[]>([]);
 	public installmentsTotalValue = new AttributeShelf<number>(0);
-	public paymentSlipHtml = new AttributeShelf<string>("");
+	public paymentSlip = new AttributeShelf<string>("");
 
 	constructor() {
 		makeObservable(this);
@@ -23,10 +38,10 @@ export class ClientStore {
 		this.installmentsTotalValue.set(totalValue);
 	}
 
-	public fetchPaymentSlip = async (totalAmount: number, customerInfo: any): Promise<void> => {
+	public fetchPaymentSlip = async (totalAmount: number, customerInfo: CustomerInfo): Promise<void> => {
 		try {
 			const paymentSlip = await api.getPaymentSlip(totalAmount, customerInfo);
-			this.paymentSlipHtml.set(Object.values(paymentSlip)[0]);
+			this.paymentSlip.set(paymentSlip);
 		} catch (e) {
 			window.console.error(e);
 		}

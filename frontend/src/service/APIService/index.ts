@@ -5,7 +5,7 @@ import * as types from "./types";
 class API {
 	constructor(private api: AxiosInstance) {}
 
-	public getPaymentSlip = async (totalAmount: number | null, customerInfo: any): Promise<string> => {
+	public getPaymentSlip = async (totalAmount: number, customerInfo: types.CustomerInfo): Promise<string> => {
 		const { data } = await this.api.post<{ html: string }>("http://localhost:5000/user/paymentSlip", {
 			totalAmount,
 			customerInfo,

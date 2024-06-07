@@ -14,6 +14,22 @@ const InstallmentsResume = () => {
 	const router = useRouter();
 	const { clientStore } = useStore();
 	const selectedInstallments = clientStore.selectedInstallments.value;
+	const installmentNumbers = selectedInstallments.map((installment) => installment.number);
+	const totalAmount = clientStore.installmentsTotalValue.value;
+	const customerInfo = {
+		name: clientStore.client.value.name,
+		cpf: clientStore.client.value.documentNumber,
+		email: clientStore.client.value.email,
+		address: {
+			street: clientStore.client.value.address.street,
+			number: clientStore.client.value.address.number,
+			neighborhood: clientStore.client.value.address.neighborhood,
+			city: clientStore.client.value.address.city,
+			state: clientStore.client.value.address.state,
+			postalCode: clientStore.client.value.address.postalCode,
+		},
+		installmentIds: installmentNumbers,
+	};
 
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -32,9 +48,11 @@ const InstallmentsResume = () => {
 
 		try {
 			await api.updateInstallments(purchaseId, installmentNumbers, status);
-			router.push("/paymentSlip");
+			await clientStore.fetchPaymentSlip(totalAmount, customerInfo);
 		} catch (error) {
 			console.error("Error updating installments:", error);
+		} finally {
+			router.push("/paymentSlip");
 		}
 	};
 
