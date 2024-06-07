@@ -31,6 +31,7 @@ export interface Client {
 	name: string;
 	email: string;
 	cellPhone: string;
+	address: Address;
 }
 
 export interface Product {
@@ -72,9 +73,21 @@ export interface UpdateInstallments {
 	status: string;
 }
 
-export interface PaymentSlip {
-	totalAmount: number;
-	customerInfo: any;
+export interface Address {
+	street: string;
+	number: string;
+	neighborhood: string;
+	city: string;
+	state: string;
+	postalCode: string;
+}
+
+export interface CustomerInfo {
+	name: string;
+	cpf: string;
+	email: string;
+	address: Address;
+	installmentIds: number[];
 }
 
 export type InstallmentsResponse = Installment[];

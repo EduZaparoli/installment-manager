@@ -4,13 +4,14 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ResetUserPasswordDto } from "./dto/reset-user-password";
 import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
+import { CustomerInfoDto } from "./dto/customerInfo.dto";
 
 @Controller("user")
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
 	@Post("paymentSlip")
-	async generatePaymentSlip(@Body() body: { totalAmount: number; customerInfo: any }) {
+	async generatePaymentSlip(@Body() body: { totalAmount: number; customerInfo: CustomerInfoDto }) {
 		const { totalAmount, customerInfo } = body;
 		const boletoHtml = await this.userService.generatePaymentSlip(totalAmount, customerInfo);
 		return boletoHtml;

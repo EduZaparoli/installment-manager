@@ -19,17 +19,29 @@ model User {
 }
 
 model PaymentSlip {
-  paymentSlipId            Int                     @id @default(autoincrement())
-  barCode                  String
-  dueDate                  DateTime
-  paymentSlipInstallmentId Int                     @unique
-  PaymentSlipInstallment   PaymentSlipInstallment  @relation(fields: [paymentSlipInstallmentId], references: [paymentSlipInstallmentId], onDelete: Cascade)
+  id           Int                     @id @default(autoincrement())
+  barCode      String
+  dueDate      DateTime
+  issuanceDate DateTime
+  html         String
+  value        Float
+  payer        String
+  status       String
+  paymentDate  DateTime?
+  PaymentSlipInstallments PaymentSlipInstallment[]
 }
 
 model PaymentSlipInstallment {
-  paymentSlipInstallmentId Int                     @id @default(autoincrement())
-  paymentSlipId            Int                     @unique
-  installmentIds           String                  
-  totalAmount              Float                   
-  PaymentSlip              PaymentSlip?
+  id             Int                     @id @default(autoincrement())
+  totalValue     Float
+  PaymentSlip    PaymentSlip?            @relation(fields: [paymentSlipId], references: [id])
+  paymentSlipId  Int?
+  Installments   PaymentSlipInstallmentItem[]
+}
+
+model PaymentSlipInstallmentItem {
+  id                       Int                   @id @default(autoincrement())
+  paymentSlipInstallmentId Int
+  installmentId            Int
+  PaymentSlipInstallment PaymentSlipInstallment @relation(fields: [paymentSlipInstallmentId], references: [id], onDelete: Cascade)
 }

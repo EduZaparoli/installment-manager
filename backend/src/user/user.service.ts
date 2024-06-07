@@ -8,35 +8,70 @@ import { AxiosError } from "axios";
 import { HttpService } from "@nestjs/axios";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
+import { CustomerInfoDto } from "./dto/customerInfo.dto";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const Boleto = require("node-boleto").Boleto;
+const Ticket = require("node-boleto").Boleto;
 
 @Injectable()
 export class UserService {
 	constructor(private readonly prisma: PrismaService, private readonly httpService: HttpService) {}
 
-	generatePaymentSlip(totalAmount: number, customerInfo: any) {
-		const boleto = new Boleto({
+	async generatePaymentSlip(totalAmount: number, customerInfo: CustomerInfoDto) {
+		const payer = `${customerInfo.name}\n${customerInfo.cpf}\n${customerInfo.address.street}, ${customerInfo.address.number} - ${customerInfo.address.neighborhood}\n${customerInfo.address.city} - ${customerInfo.address.state}\n${customerInfo.address.postalCode}`;
+
+		const ticket = new Ticket({
 			banco: "bradesco",
 			data_emissao: new Date(),
 			data_vencimento: new Date(new Date().getTime() + 5 * 24 * 3600 * 1000),
-			valor: totalAmount,
+			valor: totalAmount * 100,
 			nosso_numero: "12345678",
 			numero_documento: "1234",
 			cedente: "Your Company",
-			cedente_cnpj: "00.000.000/0000-00",
-			agencia: "0000",
+			cedente_cnpj: "10.120.000/1345-00",
+			agencia: "0001",
 			codigo_cedente: "12345",
 			carteira: "25",
-			pagador: customerInfo,
+			pagador: payer,
 			local_de_pagamento: "Pague preferencialmente no Bradesco",
 		});
 
-		console.log("Linha digitável: " + boleto["linha_digitavel"]);
+		return new Promise((resolve, reject) => {
+			ticket.renderHTML(async (html: string) => {
+				try {
+					const paymentSlip = await this.prisma.paymentSlip.create({
+						data: {
+							html,
+							paymentDate: null,
+							status: "generated",
+							value: totalAmount,
+							payer: customerInfo.name,
+							barCode: ticket.barcode_data,
+							dueDate: new Date(ticket.data_vencimento),
+							issuanceDate: new Date(ticket.data_emissao),
+						},
+					});
 
-		return new Promise((resolve) => {
-			boleto.renderHTML((html: string) => {
-				resolve({ html });
+					const paymentSlipInstallment = await this.prisma.paymentSlipInstallment.create({
+						data: {
+							totalValue: totalAmount,
+							paymentSlipId: paymentSlip.id,
+						},
+					});
+
+					const installmentIds = customerInfo.installmentIds;
+					for (const installmentId of installmentIds) {
+						await this.prisma.paymentSlipInstallmentItem.create({
+							data: {
+								paymentSlipInstallmentId: paymentSlipInstallment.id,
+								installmentId: installmentId,
+							},
+						});
+					}
+
+					resolve(paymentSlip);
+				} catch (error) {
+					reject(error);
+				}
 			});
 		});
 	}
