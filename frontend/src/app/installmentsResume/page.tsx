@@ -17,6 +17,14 @@ const InstallmentsResume = () => {
 
 	const [isOpen, setIsOpen] = useState(false);
 
+	const handleOpenModal = async () => {
+		setIsOpen(true);
+	};
+
+	const handleCloseModal = () => {
+		setIsOpen(false);
+	};
+
 	const handleConfirm = async () => {
 		const purchaseId = selectedInstallments[0]?.purchaseId;
 		const installmentNumbers = selectedInstallments.map((installment) => installment.number);
@@ -24,17 +32,10 @@ const InstallmentsResume = () => {
 
 		try {
 			await api.updateInstallments(purchaseId, installmentNumbers, status);
+			router.push("/paymentSlip");
 		} catch (error) {
 			console.error("Error updating installments:", error);
 		}
-	};
-
-	const handleOpenModal = () => {
-		setIsOpen(true);
-	};
-
-	const handleCloseModal = () => {
-		setIsOpen(false);
 	};
 
 	const onBack = () => {
@@ -62,13 +63,18 @@ const InstallmentsResume = () => {
 						<Button colorScheme={"teal"} onClick={onBack}>
 							Voltar
 						</Button>
-						<Button colorScheme={"teal"} onClick={handleConfirm}>
+						<Button colorScheme={"teal"} onClick={handleOpenModal}>
 							Confirmar
 						</Button>
 					</Flex>
 				</Box>
 			</Flex>
-			<ModalSearchUser modalTitle="Enviar boleto de pagamento" isOpen={isOpen} isClose={handleCloseModal} />
+			<ModalSearchUser
+				modalTitle="Enviar boleto de pagamento"
+				isOpen={isOpen}
+				isClose={handleCloseModal}
+				onSend={handleConfirm}
+			/>
 		</ResponsiveLayout>
 	);
 };

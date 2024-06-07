@@ -8,7 +8,8 @@ export class ClientStore {
 	public allPurchases = new AttributeShelf<apiTypes.PurchasesResponse>([]);
 	public installments = new AttributeShelf<apiTypes.InstallmentsResponse>([]);
 	public selectedInstallments = new AttributeShelf<InstallmentType[]>([]);
-	public installmentsTotalValue = new AttributeShelf<number | null>(null);
+	public installmentsTotalValue = new AttributeShelf<number>(0);
+	public paymentSlipHtml = new AttributeShelf<string>("");
 
 	constructor() {
 		makeObservable(this);
@@ -21,6 +22,15 @@ export class ClientStore {
 	setInstallmentsTotalValue(totalValue: number) {
 		this.installmentsTotalValue.set(totalValue);
 	}
+
+	public fetchPaymentSlip = async (totalAmount: number, customerInfo: any): Promise<void> => {
+		try {
+			const paymentSlip = await api.getPaymentSlip(totalAmount, customerInfo);
+			this.paymentSlipHtml.set(Object.values(paymentSlip)[0]);
+		} catch (e) {
+			window.console.error(e);
+		}
+	};
 
 	public fetchGetClient = async (documentNumber: string): Promise<void> => {
 		try {

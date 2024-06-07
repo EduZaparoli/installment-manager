@@ -19,13 +19,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface IProps {
+	onSend(): void;
 	isOpen: boolean;
 	isClose(): void;
 	modalTitle: string;
 	showInput?: boolean;
 }
 
-export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInput = false }: IProps) => {
+export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInput = false, onSend }: IProps) => {
 	const formBackGround = useColorModeValue(
 		themes.colors.primary.mainprimaryLight,
 		themes.colors.primary.mainPrimaryDark,
@@ -75,7 +76,7 @@ export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInpu
 								Buscar
 							</Button>
 						) : (
-							<Button colorScheme="teal" onClick={handleUser} mr={3}>
+							<Button colorScheme="teal" onClick={onSend} mr={3}>
 								Enviar
 							</Button>
 						)}

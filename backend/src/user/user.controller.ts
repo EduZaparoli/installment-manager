@@ -9,6 +9,13 @@ import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/clie
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
+	@Post("paymentSlip")
+	async generatePaymentSlip(@Body() body: { totalAmount: number; customerInfo: any }) {
+		const { totalAmount, customerInfo } = body;
+		const boletoHtml = await this.userService.generatePaymentSlip(totalAmount, customerInfo);
+		return boletoHtml;
+	}
+
 	@Put("updateInstallments/:purchaseId")
 	async updateInstallments(
 		@Param("purchaseId", ParseIntPipe) purchaseId: number,
