@@ -1,15 +1,23 @@
 import { AxiosInstance, RawAxiosRequestHeaders } from "axios";
 import apiClientService from "../APIClientService";
 import * as types from "./types";
+import { AuthStore, COOKIE_ACCESS_TOKEN_KEY } from "@/stores/AuthStore";
 
 class API {
 	constructor(private api: AxiosInstance) {}
 
 	public getPaymentSlip = async (totalAmount: number, customerInfo: types.CustomerInfo): Promise<string> => {
-		const { data } = await this.api.post<{ html: string }>("http://localhost:5000/user/paymentSlip", {
-			totalAmount,
-			customerInfo,
-		});
+		const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
+		const { data } = await this.api.post<{ html: string }>(
+			"http://localhost:5000/user/paymentSlip",
+			{
+				totalAmount,
+				customerInfo,
+			},
+			{
+				headers: this.headerWithAuthentication(token),
+			},
+		);
 		return data.html;
 	};
 
@@ -18,38 +26,42 @@ class API {
 		installmentNumbers: number[],
 		status: string,
 	): Promise<types.UpdateInstallments> => {
+		const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
 		const { data } = await this.api.put<types.UpdateInstallments>(
 			`http://localhost:5000/user/updateInstallments/${purchaseId}`,
 			{ installmentNumbers, status },
 			{
-				headers: this.baseHeaders(),
+				headers: this.headerWithAuthentication(token),
 			},
 		);
 		return data;
 	};
 
 	public getClient = async (documentNumber: string): Promise<types.Client> => {
+		const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
 		const { data } = await this.api.get<types.Client>(`http://localhost:5000/user/documentNumber/${documentNumber}`, {
-			headers: this.baseHeaders(),
+			headers: this.headerWithAuthentication(token),
 		});
 		return data;
 	};
 
 	public getClientAllPurchases = async (documentNumber: string): Promise<types.PurchasesResponse> => {
+		const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
 		const { data } = await this.api.get<types.PurchasesResponse>(
 			`http://localhost:5000/user/${documentNumber}/purchases/all`,
 			{
-				headers: this.baseHeaders(),
+				headers: this.headerWithAuthentication(token),
 			},
 		);
 		return data;
 	};
 
 	public getInstallmentsByProduct = async (productId: number): Promise<types.InstallmentsResponse> => {
+		const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
 		const { data } = await this.api.get<types.InstallmentsResponse>(
 			`http://localhost:5000/user/${productId}/installments`,
 			{
-				headers: this.baseHeaders(),
+				headers: this.headerWithAuthentication(token),
 			},
 		);
 		return data;
