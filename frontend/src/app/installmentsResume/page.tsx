@@ -14,7 +14,14 @@ const InstallmentsResume = () => {
 	const router = useRouter();
 	const { clientStore } = useStore();
 	const selectedInstallments = clientStore.selectedInstallments.value;
-	const installmentNumbers = selectedInstallments.map((installment) => installment.number);
+
+	const installmentsData = selectedInstallments.map((installment) => ({
+		purchaseId: installment.purchaseId,
+		number: installment.number,
+		date: installment.date,
+		value: installment.value,
+	}));
+
 	const totalAmount = clientStore.installmentsTotalValue.value;
 	const customerInfo = {
 		name: clientStore.client.value.name,
@@ -28,7 +35,7 @@ const InstallmentsResume = () => {
 			state: clientStore.client.value.address.state,
 			postalCode: clientStore.client.value.address.postalCode,
 		},
-		installmentIds: installmentNumbers,
+		installments: installmentsData,
 	};
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -60,13 +67,6 @@ const InstallmentsResume = () => {
 		clientStore.setInstallmentsTotalValue(0);
 		router.push("/selectInstallmentsAdvance");
 	};
-
-	const installmentsData = selectedInstallments.map((installment) => ({
-		purchaseId: installment.purchaseId,
-		number: installment.number,
-		date: installment.date,
-		value: installment.value,
-	}));
 
 	return (
 		<ResponsiveLayout>

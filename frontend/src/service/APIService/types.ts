@@ -64,8 +64,15 @@ interface Installment {
 	installmentValue: number;
 	dueDate: string;
 	paymentDate: string | null;
-	status: string | null;
+	status: string;
 	purchase: Purchase;
+}
+
+export interface SelectedInstallments {
+	purchaseId: number;
+	number: number;
+	date: string;
+	value: number;
 }
 
 export interface UpdateInstallments {
@@ -87,7 +94,7 @@ export interface CustomerInfo {
 	cpf: string;
 	email: string;
 	address: Address;
-	installmentIds: number[];
+	installments: SelectedInstallments[];
 }
 
 export type InstallmentsResponse = Installment[];
