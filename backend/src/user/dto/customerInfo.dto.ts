@@ -27,6 +27,24 @@ export class AddressDto {
 	postalCode: string;
 }
 
+export class SelectedInstallmentsDto {
+	@IsNumber()
+	@IsNotEmpty()
+	purchaseId: number;
+
+	@IsNumber()
+	@IsNotEmpty()
+	number: number;
+
+	@IsString()
+	@IsNotEmpty()
+	date: string;
+
+	@IsNumber()
+	@IsNotEmpty()
+	value: number;
+}
+
 export class CustomerInfoDto {
 	@IsString()
 	@IsNotEmpty()
@@ -45,7 +63,7 @@ export class CustomerInfoDto {
 	address: AddressDto;
 
 	@IsArray()
-	@IsNumber({}, { each: true })
-	@IsNotEmpty()
-	installmentIds: number[];
+	@ValidateNested({ each: true })
+	@Type(() => SelectedInstallmentsDto)
+	installments: SelectedInstallmentsDto[];
 }

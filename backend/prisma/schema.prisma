@@ -19,15 +19,16 @@ model User {
 }
 
 model PaymentSlip {
-  id           Int                     @id @default(autoincrement())
-  barCode      String
-  dueDate      DateTime
-  issuanceDate DateTime
-  html         String
-  value        Float
-  payer        String
-  status       String
-  paymentDate  DateTime?
+  id             Int                     @id @default(autoincrement())
+  barCode        String
+  dueDate        DateTime
+  issuanceDate   DateTime
+  html           String
+  value          Float
+  payer          String
+  documentNumber String
+  status         String
+  paymentDate    DateTime?
   PaymentSlipInstallments PaymentSlipInstallment[]
 }
 
@@ -42,6 +43,9 @@ model PaymentSlipInstallment {
 model PaymentSlipInstallmentItem {
   id                       Int                   @id @default(autoincrement())
   paymentSlipInstallmentId Int
-  installmentId            Int
-  PaymentSlipInstallment PaymentSlipInstallment @relation(fields: [paymentSlipInstallmentId], references: [id], onDelete: Cascade)
+  purchaseId               Int
+  number                   Int
+  date                     DateTime
+  value                    Float
+  PaymentSlipInstallment   PaymentSlipInstallment @relation(fields: [paymentSlipInstallmentId], references: [id], onDelete: Cascade)
 }

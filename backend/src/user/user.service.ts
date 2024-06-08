@@ -9,6 +9,7 @@ import { HttpService } from "@nestjs/axios";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
 import { CustomerInfoDto } from "./dto/customerInfo.dto";
+import * as moment from "moment";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Ticket = require("node-boleto").Boleto;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -50,6 +51,7 @@ export class UserService {
 							status: "generated",
 							value: totalAmount,
 							payer: customerInfo.name,
+							documentNumber: customerInfo.cpf,
 							barCode: ticket.barcode_data,
 							dueDate: new Date(ticket.data_vencimento),
 							issuanceDate: new Date(ticket.data_emissao),
@@ -63,12 +65,16 @@ export class UserService {
 						},
 					});
 
-					const installmentIds = customerInfo.installmentIds;
-					for (const installmentId of installmentIds) {
+					const installments = customerInfo.installments;
+					for (const installment of installments) {
+						const parsedDate = moment(installment.date, "DD/MM/YYYY").toDate();
 						await this.prisma.paymentSlipInstallmentItem.create({
 							data: {
 								paymentSlipInstallmentId: paymentSlipInstallment.id,
-								installmentId: installmentId,
+								purchaseId: installment.purchaseId,
+								number: installment.number,
+								date: parsedDate,
+								value: installment.value,
 							},
 						});
 					}
