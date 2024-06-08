@@ -11,6 +11,11 @@ import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/clie
 import { CustomerInfoDto } from "./dto/customerInfo.dto";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Ticket = require("node-boleto").Boleto;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require("dotenv").config();
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 @Injectable()
 export class UserService {
@@ -68,12 +73,32 @@ export class UserService {
 						});
 					}
 
+					await this.sendPaymentSlipEmail(customerInfo.email, html, ticket.barcode_data);
+
 					resolve(paymentSlip);
 				} catch (error) {
 					reject(error);
 				}
 			});
 		});
+	}
+
+	async sendPaymentSlipEmail(toEmail: string, boletoHtml: string, barcode: string) {
+		const msg = {
+			to: toEmail,
+			from: "lethalc83@gmail.com",
+			subject: "Seu Boleto de Pagamento",
+			text: `Aqui está seu boleto de pagamento. Código de barras: ${barcode}`,
+			html: boletoHtml,
+		};
+
+		try {
+			await sgMail.send(msg);
+			console.log("Email enviado com sucesso");
+		} catch (error) {
+			console.error("Erro ao enviar o e-mail:", error);
+			throw error;
+		}
 	}
 
 	async updateInstallments(purchaseId: number, installmentNumbers: number[], status: string): Promise<string> {
