@@ -14,6 +14,9 @@ const InstallmentsResume = () => {
 	const router = useRouter();
 	const { clientStore } = useStore();
 	const selectedInstallments = clientStore.selectedInstallments.value;
+	const totalAmount = clientStore.installmentsTotalValue.value;
+	const customer = clientStore.client.value;
+	const [isOpen, setIsOpen] = useState(false);
 
 	const installmentsData = selectedInstallments.map((installment) => ({
 		purchaseId: installment.purchaseId,
@@ -22,23 +25,20 @@ const InstallmentsResume = () => {
 		value: installment.value,
 	}));
 
-	const totalAmount = clientStore.installmentsTotalValue.value;
 	const customerInfo = {
-		name: clientStore.client.value.name,
-		cpf: clientStore.client.value.documentNumber,
-		email: clientStore.client.value.email,
+		name: customer.name,
+		cpf: customer.documentNumber,
+		email: customer.email,
 		address: {
-			street: clientStore.client.value.address.street,
-			number: clientStore.client.value.address.number,
-			neighborhood: clientStore.client.value.address.neighborhood,
-			city: clientStore.client.value.address.city,
-			state: clientStore.client.value.address.state,
-			postalCode: clientStore.client.value.address.postalCode,
+			street: customer.address.street,
+			number: customer.address.number,
+			neighborhood: customer.address.neighborhood,
+			city: customer.address.city,
+			state: customer.address.state,
+			postalCode: customer.address.postalCode,
 		},
 		installments: installmentsData,
 	};
-
-	const [isOpen, setIsOpen] = useState(false);
 
 	const handleOpenModal = async () => {
 		setIsOpen(true);
@@ -65,12 +65,13 @@ const InstallmentsResume = () => {
 
 	const onBack = () => {
 		clientStore.setInstallmentsTotalValue(0);
-		router.push("/selectInstallmentsAdvance");
+		clientStore.installments.value = [];
+		router.back();
 	};
 
 	return (
 		<ResponsiveLayout>
-			<CustomerSection customer={{ dropdown: true }} />
+			<CustomerSection />
 			<Flex flexDirection={"column"} w={"100%"} align={"center"} alignSelf={"center"} margin={"40px 0 104px 0"}>
 				<Box width={"40%"}>
 					<Text paddingBottom={"20px"} fontSize={"24px"}>

@@ -58,7 +58,7 @@ export const InstallmentList: React.FC<IProps> = ({ installmentsData, checkbox, 
 			)}
 			<Flex bg={formBackGround} p={"24px"} justifyContent={"space-between"} marginTop={"40px"} borderRadius={"8px"}>
 				<Text fontWeight={"medium"}>Total</Text>
-				<Text fontWeight={"medium"}>{formatCurrencyBRL(clientStore.installmentsTotalValue.value ?? 0)}</Text>
+				<Text fontWeight={"medium"}>{formatCurrencyBRL(clientStore.installmentsTotalValue.value)}</Text>
 			</Flex>
 		</>
 	);

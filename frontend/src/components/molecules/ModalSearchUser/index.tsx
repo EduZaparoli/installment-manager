@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface IProps {
-	onSend(): void;
+	onSend?(): void;
 	isOpen: boolean;
 	isClose(): void;
 	modalTitle: string;
@@ -39,9 +39,10 @@ export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInpu
 		try {
 			await clientStore.fetchGetClient(documentNumber);
 			await clientStore.fetchClientAllPurchases(documentNumber);
-			router.push("/selectInstallmentsAdvance");
 		} catch (error) {
 			console.log(error);
+		} finally {
+			router.push("/selectInstallmentsAdvance");
 		}
 	};
 
@@ -65,7 +66,7 @@ export const ModalSearchUser = observer(({ isOpen, isClose, modalTitle, showInpu
 						) : (
 							<Stack gap={"5px"}>
 								<Text>O boleto de pagamento vai ser enviado para o e-mail: </Text>
-								<Text fontWeight={"medium"}>{clientStore.client.value?.email}</Text>
+								<Text fontWeight={"medium"}>{clientStore.client.value.email}</Text>
 							</Stack>
 						)}
 					</ModalBody>

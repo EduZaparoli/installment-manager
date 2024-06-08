@@ -1,12 +1,8 @@
-import { CustomerCard, CustomerCardProps } from "@/components/molecules/CustomerCard";
+import { CustomerCard } from "@/components/molecules/CustomerCard";
 import { Grid } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 
-export interface CustomerSectionProps {
-	customer: CustomerCardProps;
-}
-
-export const CustomerSection = observer(({ customer }: CustomerSectionProps) => {
+export const CustomerSection = observer(() => {
 	return (
 		<Grid
 			gridColumnGap={"24px"}
@@ -17,7 +13,7 @@ export const CustomerSection = observer(({ customer }: CustomerSectionProps) => 
 			gap={"24px"}
 			margin={"0 auto"}
 		>
-			<CustomerCard {...customer} />
+			<CustomerCard />
 		</Grid>
 	);
 });

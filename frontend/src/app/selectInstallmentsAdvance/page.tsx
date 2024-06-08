@@ -4,7 +4,8 @@ import { CustomerSection } from "@/components/templates/CustomerSection";
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { TypeInstallmentEnum } from "@/enum/installment";
 import { useStore } from "@/stores/storeProvider";
-import { Box, Button, Flex, Select, Text } from "@chakra-ui/react";
+import { themes } from "@/themes/theme-tokens";
+import { Box, Button, Flex, Select, Text, useColorModeValue } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -23,6 +24,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
 	const [installmentsData, setInstallmentsData] = useState<InstallmentType[]>([]);
+	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
 
 	const onContinue = () => {
 		clientStore.setSelectedInstallments(installmentsData.filter((inst) => inst.checkboxEnabled));
@@ -30,7 +32,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 	};
 
 	const onBack = () => {
-		router.push("/searchUser");
+		router.back();
 	};
 
 	const productNames = clientStore.allPurchases.value.flatMap((purchase) =>
@@ -77,14 +79,19 @@ const SelectInstallmentsAdvancePage = observer(() => {
 
 	return (
 		<ResponsiveLayout>
-			<CustomerSection customer={{ dropdown: true }} />
+			<CustomerSection />
 			<Flex flexDirection={"column"} w={"100%"} align={"center"} alignSelf={"center"} margin={"40px 0 104px 0"}>
 				<Box width={"40%"}>
 					<Text paddingBottom={"20px"} fontSize={"24px"}>
 						Selecione o produto e as parcelas
 					</Text>
 					<Box pb={"20px"}>
-						<Select variant="outline" placeholder="Selecione um produto" onChange={handleChange}>
+						<Select
+							background={formBackGround}
+							variant="outline"
+							placeholder="Selecione um produto"
+							onChange={handleChange}
+						>
 							{productNames.map((product) => (
 								<option key={product.id} value={product.id.toString()}>
 									{product.name}
