@@ -97,5 +97,19 @@ export interface CustomerInfo {
 	installments: SelectedInstallments[];
 }
 
+export interface PaymentSlip {
+	id: number;
+	barCode: string;
+	dueDate: string;
+	issuanceDate: string;
+	html: string;
+	value: number;
+	payer: string;
+	documentNumber: string;
+	status: string;
+	paymentDate?: string;
+}
+
 export type InstallmentsResponse = Installment[];
 export type PurchasesResponse = Purchase[];
+export type PaymentSlipResponse = PaymentSlip[];

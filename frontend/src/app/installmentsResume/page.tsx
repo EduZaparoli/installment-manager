@@ -31,7 +31,7 @@ const InstallmentsResume = () => {
 		if (clientStore.installmentsTotalValue.value === 0) {
 			setDisable(true);
 		}
-	}, []);
+	}, [clientStore.installmentsTotalValue.value]);
 
 	const customerInfo = {
 		name: customer.name,
@@ -65,7 +65,7 @@ const InstallmentsResume = () => {
 		try {
 			await api.updateInstallments(purchaseId, installmentNumbers, status);
 			await clientStore.fetchPaymentSlip(totalAmount, customerInfo);
-			router.push("/paymentSlip");
+			onBack();
 		} catch (error) {
 			console.error("Error updating installments:", error);
 		} finally {
@@ -75,8 +75,8 @@ const InstallmentsResume = () => {
 
 	const onBack = () => {
 		clientStore.setInstallmentsTotalValue(0);
-		clientStore.installments.value = [];
-		router.back();
+		clientStore.selectedInstallments.value = [];
+		router.push("selectInstallmentsAdvance");
 	};
 
 	return (

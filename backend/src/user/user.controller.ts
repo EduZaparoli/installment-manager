@@ -1,4 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe, UseGuards } from "@nestjs/common";
+import {
+	Controller,
+	Get,
+	Post,
+	Body,
+	Patch,
+	Param,
+	Delete,
+	Put,
+	ParseIntPipe,
+	UseGuards,
+	HttpStatus,
+	HttpException,
+	Res,
+} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -7,6 +21,7 @@ import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/clie
 import { CustomerInfoDto } from "./dto/customerInfo.dto";
 import { LocalAuthGuard } from "src/auth/guards/local-auth.guard";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { Response } from "express";
 
 @Controller("user")
 export class UserController {
@@ -33,7 +48,14 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	@Get("documentNumber/:documentNumber")
 	async findByDocumentNumber(@Param("documentNumber") documentNumber: string): Promise<Client> {
-		return this.userService.findByDocumentNumber(documentNumber);
+		try {
+			return await this.userService.findByDocumentNumber(documentNumber);
+		} catch (error) {
+			if (error.status === HttpStatus.NOT_FOUND) {
+				throw new HttpException("Client not found", HttpStatus.NOT_FOUND);
+			}
+			throw error;
+		}
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -48,13 +70,11 @@ export class UserController {
 		return this.userService.findInstallmentsByProduct(productId);
 	}
 
-	@UseGuards(LocalAuthGuard)
 	@Patch("reset-password")
 	async resetPassword(@Body() updatePasswordDto: ResetUserPasswordDto) {
 		return this.userService.resetPassword(updatePasswordDto);
 	}
 
-	@UseGuards(LocalAuthGuard)
 	@Post()
 	create(@Body() createUserDto: CreateUserDto) {
 		return this.userService.create(createUserDto);
@@ -80,5 +100,31 @@ export class UserController {
 	@Delete(":id")
 	remove(@Param("id") id: string) {
 		return this.userService.remove(+id);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get(":documentNumber/payment-slips")
+	async getPaymentSlips(@Param("documentNumber") documentNumber: string) {
+		try {
+			const paymentSlips = await this.userService.findPaymentSlipsByCustomer(documentNumber);
+			return paymentSlips;
+		} catch (error) {
+			throw new HttpException(error.message, error.status);
+		}
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get("payment-slips/:slipId/download")
+	async downloadPaymentSlip(@Param("slipId", ParseIntPipe) slipId: number, @Res() res: Response) {
+		try {
+			const fileStream = await this.userService.downloadPaymentSlip(slipId);
+			res.set({
+				"Content-Type": "application/pdf",
+				"Content-Disposition": `attachment; filename=boleto_${slipId}.pdf`,
+			});
+			fileStream.pipe(res);
+		} catch (error) {
+			throw new HttpException(error.message, error.status);
+		}
 	}
 }

@@ -32,7 +32,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 	};
 
 	const onBack = () => {
-		router.back();
+		router.push("searchUser");
 	};
 
 	const productNames = clientStore.allPurchases.value.flatMap((purchase) =>
@@ -61,9 +61,17 @@ const SelectInstallmentsAdvancePage = observer(() => {
 		}
 	}, [selectedProduct]);
 
+	useEffect(() => {
+		const savedProduct = localStorage.getItem("selectedProduct");
+		if (savedProduct) {
+			setSelectedProduct(parseInt(savedProduct, 10));
+		}
+	}, []);
+
 	const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const productId = parseInt(event.target.value, 10);
 		setSelectedProduct(productId);
+		localStorage.setItem("selectedProduct", productId.toString());
 		setInstallmentsData([]);
 		setIsDisabled(true);
 	};
@@ -91,6 +99,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 							variant="outline"
 							placeholder="Selecione um produto"
 							onChange={handleChange}
+							value={selectedProduct !== null ? selectedProduct.toString() : ""}
 						>
 							{productNames.map((product) => (
 								<option key={product.id} value={product.id.toString()}>

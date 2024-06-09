@@ -1,5 +1,5 @@
 "use client";
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Container } from "@/components/atoms/Container";
@@ -13,6 +13,7 @@ const ResetPassword = () => {
 	const [newPassword, setNewPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const toast = useToast();
 
 	const onContinue = async () => {
 		setIsSubmitted(true);
@@ -26,9 +27,26 @@ const ResetPassword = () => {
 			if (password === newPassword) {
 				await api.resetPasswordUser(email, newPassword);
 				router.push("/auth/login");
+			} else {
+				toast({
+					title: "Erro.",
+					description: "As senhas precisam ser iguais.",
+					status: "error",
+					duration: 5000,
+					position: "top",
+					isClosable: true,
+				});
 			}
 		} catch (error) {
 			console.log(error);
+			toast({
+				title: "Erro.",
+				description: "Erro na redefinição de senha",
+				status: "error",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
 		} finally {
 			setIsLoading(false);
 		}
