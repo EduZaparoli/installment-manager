@@ -1,3 +1,4 @@
+import { useStore } from "@/stores/storeProvider";
 import { themes } from "@/themes/theme-tokens";
 import { isValidCPF } from "@/utils/isValidCPF";
 import {
@@ -37,6 +38,7 @@ export const ModalSearchUser = observer(
 		const [documentNumber, setDocumentNumber] = useState("");
 		const [isLoading, setIsLoading] = useState(false);
 		const toast = useToast();
+		const { clientStore } = useStore();
 
 		const handleUser = async () => {
 			if (!isValidCPF(documentNumber)) {
@@ -54,7 +56,7 @@ export const ModalSearchUser = observer(
 			setIsLoading(true);
 			try {
 				await onSearchUser?.(documentNumber);
-				isClose(); // Fecha o modal após a busca
+				isClose();
 			} catch (error) {
 				toast({
 					title: "Erro",
@@ -89,7 +91,7 @@ export const ModalSearchUser = observer(
 						) : (
 							<Stack gap={"5px"}>
 								<Text>O boleto de pagamento vai ser enviado para o e-mail: </Text>
-								<Text fontWeight={"medium"}>{/* Renderizar email do cliente aqui */}</Text>
+								<Text fontWeight={"medium"}>{clientStore.client.value.email}</Text>
 							</Stack>
 						)}
 					</ModalBody>
