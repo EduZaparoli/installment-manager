@@ -5,11 +5,13 @@ import { useStore } from "@/stores/storeProvider";
 import {
 	Box,
 	Button,
+	Center,
 	Flex,
 	Heading,
 	Table,
 	Tbody,
 	Td,
+	Text,
 	Th,
 	Thead,
 	Tr,
@@ -19,6 +21,8 @@ import {
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { themes } from "@/themes/theme-tokens";
 import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
+import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL";
+import { TypePaymentSliptEnum } from "@/enum/installment";
 
 interface PaymentSlip {
 	id: number;
@@ -51,15 +55,17 @@ const PaymentSlipsPage = observer(() => {
 	const fetchPaymentSlips = async () => {
 		try {
 			await clientStore.fetchPaymentSlips();
-			setPaymentSlips(clientStore.paymentSlips.value as PaymentSlip[]);
+			setPaymentSlips(clientStore.paymentSlips.value);
 		} catch (error) {
 			toast({
 				title: "Erro.",
 				description: "Erro ao carregar boletos.",
 				status: "error",
 				duration: 5000,
+				position: "top",
 				isClosable: true,
 			});
+			setPaymentSlips([]);
 		}
 	};
 
@@ -88,6 +94,7 @@ const PaymentSlipsPage = observer(() => {
 				description: "Erro ao baixar o boleto.",
 				status: "error",
 				duration: 5000,
+				position: "top",
 				isClosable: true,
 			});
 		}
@@ -109,6 +116,7 @@ const PaymentSlipsPage = observer(() => {
 				position: "top",
 				isClosable: true,
 			});
+			setPaymentSlips([]);
 		}
 	};
 
@@ -119,34 +127,54 @@ const PaymentSlipsPage = observer(() => {
 					<Heading as="h1" size="lg" mb={4}>
 						Boletos do Cliente
 					</Heading>
+					<Box as="p" pb={"20px"}>
+						<Text fontWeight={"medium"}>Nome: {clientStore.client.value.name}</Text>
+					</Box>
+
 					<Table variant="simple">
 						<Thead>
 							<Tr>
 								<Th>ID</Th>
+								<Th>Status</Th>
 								<Th>Data de Emissão</Th>
 								<Th>Data de Vencimento</Th>
 								<Th>Valor</Th>
 								<Th>Ações</Th>
 							</Tr>
 						</Thead>
-						<Tbody>
-							{paymentSlips.map((slip) => (
-								<Tr key={slip.id}>
-									<Td>{slip.id}</Td>
-									<Td>{new Date(slip.issuanceDate).toLocaleDateString()}</Td>
-									<Td>{new Date(slip.dueDate).toLocaleDateString()}</Td>
-									<Td>{slip.value.toFixed(2)}</Td>
-									<Td>
-										<Button colorScheme="teal" size="sm" mr={2} onClick={() => handleView(slip.html)}>
-											Exibir
-										</Button>
-										<Button colorScheme="teal" size="sm" onClick={() => handleDownload(slip.id)}>
-											Baixar PDF
-										</Button>
+						{paymentSlips.length === 0 ? (
+							<Tbody>
+								<Tr>
+									<Td colSpan={6}>
+										<Center pt={"20px"}>
+											<Text>Nenhum boleto encontrado.</Text>
+										</Center>
 									</Td>
 								</Tr>
-							))}
-						</Tbody>
+							</Tbody>
+						) : (
+							<Tbody>
+								{paymentSlips.map((slip) => (
+									<Tr key={slip.id}>
+										<Td>{slip.id}</Td>
+										<Td fontWeight={"medium"} color={slip.status === TypePaymentSliptEnum.STATUS_CREATE ? "" : "green"}>
+											{slip.status}
+										</Td>
+										<Td>{new Date(slip.issuanceDate).toLocaleDateString()}</Td>
+										<Td>{new Date(slip.dueDate).toLocaleDateString()}</Td>
+										<Td>{formatCurrencyBRL(slip.value)}</Td>
+										<Td>
+											<Button colorScheme="teal" size="sm" mr={2} onClick={() => handleView(slip.html)}>
+												Exibir
+											</Button>
+											<Button colorScheme="teal" size="sm" onClick={() => handleDownload(slip.id)}>
+												Baixar PDF
+											</Button>
+										</Td>
+									</Tr>
+								))}
+							</Tbody>
+						)}
 					</Table>
 				</Box>
 				<Box paddingTop={"50px"}>

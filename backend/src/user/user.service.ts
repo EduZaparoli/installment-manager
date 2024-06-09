@@ -50,7 +50,7 @@ export class UserService {
 						data: {
 							html,
 							paymentDate: null,
-							status: "generated",
+							status: "CRIADO",
 							value: totalAmount,
 							payer: customerInfo.name,
 							documentNumber: customerInfo.cpf,
