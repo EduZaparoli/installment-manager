@@ -4,7 +4,11 @@ import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 import { useState } from "react";
 
-const SearchUser = () => {
+interface IProps {
+	onSearchUser(cpf: string): Promise<void>;
+}
+
+const SearchUser = ({ onSearchUser }: IProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleOpenModal = () => {
@@ -16,7 +20,7 @@ const SearchUser = () => {
 	};
 
 	return (
-		<ResponsiveLayout>
+		<ResponsiveLayout index={0}>
 			<Grid justifyItems={"center"} alignItems={"center"} marginLeft={8} marginRight={8} height={"70%"}>
 				<GridItem>
 					<Stack gap={3} padding={"20px"}>
@@ -28,7 +32,13 @@ const SearchUser = () => {
 							Buscar CPF
 						</Button>
 					</Box>
-					<ModalSearchUser modalTitle="Informe o CPF do cliente" showInput isOpen={isOpen} isClose={handleCloseModal} />
+					<ModalSearchUser
+						modalTitle="Informe o CPF do cliente"
+						showInput
+						isOpen={isOpen}
+						isClose={handleCloseModal}
+						onSearchUser={onSearchUser}
+					/>
 				</GridItem>
 			</Grid>
 		</ResponsiveLayout>
