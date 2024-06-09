@@ -11,14 +11,24 @@ const Home = () => {
 	const router = useRouter();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+	const [isSubmitted, setIsSubmitted] = useState(false);
 
 	const onContinue = async () => {
+		setIsSubmitted(true);
+
+		if (!email || !password) {
+			return;
+		}
+
+		setIsLoading(true);
 		try {
 			await fetchAccessToken(email, password);
+			router.push("/searchUser");
 		} catch (error) {
 			console.log(error);
 		} finally {
-			router.push("/searchUser");
+			setIsLoading(false);
 		}
 	};
 
@@ -32,6 +42,8 @@ const Home = () => {
 						password={password}
 						onEmail={setEmail}
 						onPassword={setPassword}
+						isLoading={isLoading}
+						isSubmitted={isSubmitted}
 					/>
 				</Flex>
 			</Container>

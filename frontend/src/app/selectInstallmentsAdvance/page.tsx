@@ -104,7 +104,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 						<Button colorScheme={"teal"} onClick={onBack}>
 							Voltar
 						</Button>
-						<Button colorScheme={"teal"} disabled={isDisabled} onClick={onContinue}>
+						<Button colorScheme={"teal"} onClick={onContinue} isDisabled={isDisabled}>
 							Continuar
 						</Button>
 					</Flex>

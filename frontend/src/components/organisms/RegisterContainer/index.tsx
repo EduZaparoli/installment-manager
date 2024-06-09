@@ -3,6 +3,8 @@ import { themes } from "@/themes/theme-tokens";
 import { Box, Button, Flex, Heading, Input, Link, useColorModeValue } from "@chakra-ui/react";
 
 interface IProps {
+	isLoading: boolean;
+	isSubmitted: boolean;
 	firstName: string;
 	lastName: string;
 	email: string;
@@ -15,6 +17,8 @@ interface IProps {
 }
 
 export const RegisterContainer = ({
+	isLoading,
+	isSubmitted,
 	firstName,
 	lastName,
 	email,
@@ -37,6 +41,7 @@ export const RegisterContainer = ({
 				type="text"
 				onChange={(e) => onFirstName(e.target.value)}
 				value={firstName}
+				isInvalid={isSubmitted && firstName === ""}
 			/>
 			<Input
 				placeholder="Sobrenome"
@@ -45,6 +50,7 @@ export const RegisterContainer = ({
 				type="text"
 				onChange={(e) => onLastName(e.target.value)}
 				value={lastName}
+				isInvalid={isSubmitted && lastName === ""}
 			/>
 			<Input
 				placeholder="E-mail"
@@ -53,6 +59,7 @@ export const RegisterContainer = ({
 				type="email"
 				onChange={(e) => onEmail(e.target.value)}
 				value={email}
+				isInvalid={isSubmitted && email === ""}
 			/>
 			<Input
 				placeholder="Senha"
@@ -61,8 +68,9 @@ export const RegisterContainer = ({
 				type="password"
 				onChange={(e) => onPassword(e.target.value)}
 				value={password}
+				isInvalid={isSubmitted && password === ""}
 			/>
-			<Button onClick={onContinue} colorScheme="teal">
+			<Button onClick={onContinue} colorScheme="teal" isLoading={isLoading} loadingText="Loading">
 				Cadastrar
 			</Button>
 			<Box alignSelf={"center"} paddingTop={"4"}>

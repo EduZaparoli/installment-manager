@@ -17,6 +17,7 @@ const InstallmentsResume = () => {
 	const totalAmount = clientStore.installmentsTotalValue.value;
 	const customer = clientStore.client.value;
 	const [isOpen, setIsOpen] = useState(false);
+	const [isLoadingResume, setIsLoadingResume] = useState(false);
 
 	const installmentsData = selectedInstallments.map((installment) => ({
 		purchaseId: installment.purchaseId,
@@ -52,14 +53,16 @@ const InstallmentsResume = () => {
 		const purchaseId = selectedInstallments[0]?.purchaseId;
 		const installmentNumbers = selectedInstallments.map((installment) => installment.number);
 		const status = TypeInstallmentEnum.STATUS_PENDING;
+		setIsLoadingResume(true);
 
 		try {
 			await api.updateInstallments(purchaseId, installmentNumbers, status);
 			await clientStore.fetchPaymentSlip(totalAmount, customerInfo);
+			router.push("/paymentSlip");
 		} catch (error) {
 			console.error("Error updating installments:", error);
 		} finally {
-			router.push("/paymentSlip");
+			setIsLoadingResume(false);
 		}
 	};
 
@@ -89,6 +92,7 @@ const InstallmentsResume = () => {
 				</Box>
 			</Flex>
 			<ModalSearchUser
+				isLoadingResume={isLoadingResume}
 				modalTitle="Enviar boleto de pagamento"
 				isOpen={isOpen}
 				isClose={handleCloseModal}
