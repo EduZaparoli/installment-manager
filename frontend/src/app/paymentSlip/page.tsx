@@ -1,21 +1,169 @@
 "use client";
+import { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
 import { useStore } from "@/stores/storeProvider";
-import { Flex } from "@chakra-ui/react";
-import { useEffect } from "react";
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Table,
+	Tbody,
+	Td,
+	Th,
+	Thead,
+	Tr,
+	useColorModeValue,
+	useToast,
+} from "@chakra-ui/react";
+import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
+import { themes } from "@/themes/theme-tokens";
+import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 
-const PaymentSlip = () => {
+interface PaymentSlip {
+	id: number;
+	barCode: string;
+	dueDate: string;
+	issuanceDate: string;
+	html: string;
+	value: number;
+	payer: string;
+	documentNumber: string;
+	status: string;
+	paymentDate?: string;
+}
+
+const PaymentSlipsPage = observer(() => {
 	const { clientStore } = useStore();
+	const [paymentSlips, setPaymentSlips] = useState<PaymentSlip[]>([]);
+	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
+	const [isOpen, setIsOpen] = useState(false);
+	const toast = useToast();
+
+	const handleOpenModal = () => {
+		setIsOpen(true);
+	};
+
+	const handleCloseModal = () => {
+		setIsOpen(false);
+	};
+
+	const fetchPaymentSlips = async () => {
+		try {
+			await clientStore.fetchPaymentSlips();
+			setPaymentSlips(clientStore.paymentSlips.value as PaymentSlip[]);
+		} catch (error) {
+			toast({
+				title: "Erro.",
+				description: "Erro ao carregar boletos.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+	};
 
 	useEffect(() => {
-		clientStore.selectedInstallments.value = [];
-		clientStore.installmentsTotalValue.value = 0;
-	}, []);
+		fetchPaymentSlips();
+	}, [clientStore, toast]);
+
+	const handleView = (slipHtml: string) => {
+		const newWindow = window.open();
+		if (newWindow) {
+			newWindow.document.write(slipHtml);
+		}
+	};
+
+	const handleDownload = async (slipId: number) => {
+		try {
+			const pdf = await clientStore.downloadPaymentSlip(slipId);
+			const blob = new Blob([pdf], { type: "application/pdf" });
+			const link = document.createElement("a");
+			link.href = window.URL.createObjectURL(blob);
+			link.download = `boleto_${slipId}.pdf`;
+			link.click();
+		} catch (error) {
+			toast({
+				title: "Erro.",
+				description: "Erro ao baixar o boleto.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+	};
+
+	const handleSearchUser = async (cpf: string) => {
+		try {
+			await clientStore.fetchGetClient(cpf);
+			await clientStore.fetchClientAllPurchases(cpf);
+			await fetchPaymentSlips();
+			handleCloseModal();
+		} catch (error) {
+			console.log(error);
+			toast({
+				title: "Erro.",
+				description: "Cliente não encontrado.",
+				status: "error",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
+		}
+	};
 
 	return (
-		<Flex pt={"100px"} width={"100%"} align={"center"} justify={"center"}>
-			<div dangerouslySetInnerHTML={{ __html: clientStore.paymentSlip.value }} />
-		</Flex>
+		<ResponsiveLayout index={1}>
+			<Flex pt={"100px"} width={"100%"} align={"center"} justify={"center"} flexDirection={"column"}>
+				<Box width={"80%"} p={5} shadow="md" borderWidth="1px" borderRadius="md" bg={formBackGround}>
+					<Heading as="h1" size="lg" mb={4}>
+						Boletos do Cliente
+					</Heading>
+					<Table variant="simple">
+						<Thead>
+							<Tr>
+								<Th>ID</Th>
+								<Th>Data de Emissão</Th>
+								<Th>Data de Vencimento</Th>
+								<Th>Valor</Th>
+								<Th>Ações</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{paymentSlips.map((slip) => (
+								<Tr key={slip.id}>
+									<Td>{slip.id}</Td>
+									<Td>{new Date(slip.issuanceDate).toLocaleDateString()}</Td>
+									<Td>{new Date(slip.dueDate).toLocaleDateString()}</Td>
+									<Td>{slip.value.toFixed(2)}</Td>
+									<Td>
+										<Button colorScheme="teal" size="sm" mr={2} onClick={() => handleView(slip.html)}>
+											Exibir
+										</Button>
+										<Button colorScheme="teal" size="sm" onClick={() => handleDownload(slip.id)}>
+											Baixar PDF
+										</Button>
+									</Td>
+								</Tr>
+							))}
+						</Tbody>
+					</Table>
+				</Box>
+				<Box paddingTop={"50px"}>
+					<Button colorScheme="teal" onClick={handleOpenModal}>
+						Buscar CPF
+					</Button>
+				</Box>
+			</Flex>
+			<ModalSearchUser
+				modalTitle="Informe o CPF do cliente"
+				showInput
+				isOpen={isOpen}
+				isClose={handleCloseModal}
+				onSearchUser={handleSearchUser}
+			/>
+		</ResponsiveLayout>
 	);
-};
+});
 
-export default PaymentSlip;
+export default PaymentSlipsPage;
