@@ -8,7 +8,7 @@ import { api } from "@/service/APIService";
 import { useStore } from "@/stores/storeProvider";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const InstallmentsResume = () => {
 	const router = useRouter();
@@ -18,6 +18,7 @@ const InstallmentsResume = () => {
 	const customer = clientStore.client.value;
 	const [isOpen, setIsOpen] = useState(false);
 	const [isLoadingResume, setIsLoadingResume] = useState(false);
+	const [disable, setDisable] = useState(false);
 
 	const installmentsData = selectedInstallments.map((installment) => ({
 		purchaseId: installment.purchaseId,
@@ -25,6 +26,12 @@ const InstallmentsResume = () => {
 		date: installment.date,
 		value: installment.value,
 	}));
+
+	useEffect(() => {
+		if (clientStore.installmentsTotalValue.value === 0) {
+			setDisable(true);
+		}
+	}, []);
 
 	const customerInfo = {
 		name: customer.name,
@@ -85,7 +92,7 @@ const InstallmentsResume = () => {
 						<Button colorScheme={"teal"} onClick={onBack}>
 							Voltar
 						</Button>
-						<Button colorScheme={"teal"} onClick={handleOpenModal}>
+						<Button colorScheme={"teal"} onClick={handleOpenModal} isDisabled={disable}>
 							Confirmar
 						</Button>
 					</Flex>

@@ -8,6 +8,7 @@ const PaymentSlip = () => {
 
 	useEffect(() => {
 		clientStore.selectedInstallments.value = [];
+		clientStore.installmentsTotalValue.value = 0;
 	}, []);
 
 	return (
