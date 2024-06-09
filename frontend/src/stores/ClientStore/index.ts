@@ -40,7 +40,7 @@ export class ClientStore {
 
 	public fetchPaymentSlip = async (totalAmount: number, customerInfo: CustomerInfo): Promise<void> => {
 		try {
-			const paymentSlip = await api.getPaymentSlip(totalAmount, customerInfo);
+			const paymentSlip = await api.createPaymentSlip(totalAmount, customerInfo);
 			this.paymentSlip.set(paymentSlip);
 		} catch (e) {
 			window.console.error(e);

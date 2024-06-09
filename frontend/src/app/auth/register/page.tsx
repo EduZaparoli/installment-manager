@@ -14,15 +14,25 @@ const Register = () => {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+	const [isSubmitted, setIsSubmitted] = useState(false);
 
 	const onContinue = async () => {
+		setIsSubmitted(true);
+
+		if (!email || !password || !firstName || !lastName) {
+			return;
+		}
+
+		setIsLoading(true);
 		try {
 			await api.postUser(firstName, lastName, email, password);
 			await fetchAccessToken(email, password);
+			router.push("/searchUser");
 		} catch (error) {
 			console.log(error);
 		} finally {
-			router.push("/searchUser");
+			setIsLoading(false);
 		}
 	};
 
@@ -40,6 +50,8 @@ const Register = () => {
 						onLastName={setLastName}
 						onEmail={setEmail}
 						onPassword={setPassword}
+						isLoading={isLoading}
+						isSubmitted={isSubmitted}
 					/>
 				</Flex>
 			</Container>

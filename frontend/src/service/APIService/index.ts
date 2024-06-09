@@ -6,7 +6,7 @@ import { AuthStore, COOKIE_ACCESS_TOKEN_KEY } from "@/stores/AuthStore";
 class API {
 	constructor(private api: AxiosInstance) {}
 
-	public getPaymentSlip = async (totalAmount: number, customerInfo: types.CustomerInfo): Promise<string> => {
+	public createPaymentSlip = async (totalAmount: number, customerInfo: types.CustomerInfo): Promise<string> => {
 		const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
 		const { data } = await this.api.post<{ html: string }>(
 			"http://localhost:5000/user/paymentSlip",

@@ -1,4 +1,5 @@
 import { api } from "@/service/APIService";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 
 export const COOKIE_ACCESS_TOKEN_KEY = "PARCELADMIN_APP_TOKEN";
 
@@ -32,9 +33,25 @@ export class AuthStore {
 		return "";
 	}
 
+	private isTokenExpired(token: string): boolean {
+		try {
+			const decoded: JwtPayload = jwtDecode(token);
+
+			if (!decoded.exp) {
+				return true;
+			}
+
+			const currentTime = Date.now() / 1000;
+			return decoded.exp < currentTime;
+		} catch (error) {
+			console.error("Invalid token", error);
+			return true;
+		}
+	}
+
 	public get isAuthenticated(): boolean {
-		let user = this.getCookie(COOKIE_ACCESS_TOKEN_KEY);
-		return user !== "";
+		const token = this.getCookie(COOKIE_ACCESS_TOKEN_KEY);
+		return token !== "" && !this.isTokenExpired(token);
 	}
 
 	public logout = (): void => {

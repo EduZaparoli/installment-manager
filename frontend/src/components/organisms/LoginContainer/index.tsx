@@ -1,5 +1,6 @@
 "use client";
 import { themes } from "@/themes/theme-tokens";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Button, Flex, Heading, Input, Link, useColorModeValue } from "@chakra-ui/react";
 
 interface IProps {
@@ -11,6 +12,8 @@ interface IProps {
 	onPassword: (value: string) => void;
 	onNewPassword?: (value: string) => void;
 	onContinue: () => void;
+	isLoading: boolean;
+	isSubmitted: boolean;
 }
 
 export const LoginContainer = ({
@@ -22,6 +25,8 @@ export const LoginContainer = ({
 	onPassword,
 	onNewPassword,
 	onContinue,
+	isLoading,
+	isSubmitted,
 }: IProps) => {
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
 
@@ -35,6 +40,7 @@ export const LoginContainer = ({
 				type="email"
 				onChange={(e) => onEmail(e.target.value)}
 				value={email}
+				isInvalid={isSubmitted && email === ""}
 			/>
 			<Input
 				placeholder={resetPassword ? "Nova Senha" : "Senha"}
@@ -43,6 +49,7 @@ export const LoginContainer = ({
 				type="password"
 				onChange={(e) => onPassword(e.target.value)}
 				value={password}
+				isInvalid={isSubmitted && password === ""}
 			/>
 			{resetPassword && (
 				<Input
@@ -52,9 +59,16 @@ export const LoginContainer = ({
 					type="password"
 					onChange={(e) => onNewPassword && onNewPassword(e.target.value)}
 					value={newPassword}
+					isInvalid={isSubmitted && newPassword === ""}
 				/>
 			)}
-			<Button onClick={onContinue} colorScheme="teal">
+			<Button
+				onClick={onContinue}
+				colorScheme="teal"
+				rightIcon={resetPassword ? undefined : <ArrowForwardIcon />}
+				isLoading={isLoading}
+				loadingText="Loading"
+			>
 				{resetPassword ? "Redefinir" : "Log in"}
 			</Button>
 			<Flex alignSelf={"center"} paddingTop={"4"} direction={"column"} align={"center"} gap={2}>

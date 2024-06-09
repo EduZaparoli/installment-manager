@@ -11,16 +11,26 @@ const ResetPassword = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+	const [isSubmitted, setIsSubmitted] = useState(false);
 
 	const onContinue = async () => {
+		setIsSubmitted(true);
+
+		if (!email || !password || !newPassword) {
+			return;
+		}
+
+		setIsLoading(true);
 		try {
 			if (password === newPassword) {
 				await api.resetPasswordUser(email, newPassword);
+				router.push("/auth/login");
 			}
 		} catch (error) {
 			console.log(error);
 		} finally {
-			router.push("/auth/login");
+			setIsLoading(false);
 		}
 	};
 
@@ -37,6 +47,8 @@ const ResetPassword = () => {
 						onNewPassword={setNewPassword}
 						onEmail={setEmail}
 						onPassword={setPassword}
+						isLoading={isLoading}
+						isSubmitted={isSubmitted}
 					/>
 				</Flex>
 			</Container>

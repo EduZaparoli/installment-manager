@@ -9,6 +9,7 @@ const SearchUserPage = observer(() => {
 
 	useEffect(() => {
 		clientStore.installments.value = [];
+		clientStore.installmentsTotalValue.value = 0;
 	}, []);
 
 	return <SearchUser />;
