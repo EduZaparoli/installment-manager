@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcrypt";
@@ -10,6 +10,8 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
 import { CustomerInfoDto } from "./dto/customerInfo.dto";
 import * as moment from "moment";
+import { createReadStream } from "fs";
+import { join } from "path";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Ticket = require("node-boleto").Boleto;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -126,7 +128,7 @@ export class UserService {
 			this.httpService.get<Client>(`http://localhost:3001/client/documentNumber/${documentNumber}`).pipe(
 				catchError((error: AxiosError) => {
 					console.log(error);
-					throw error;
+					throw new HttpException("Client not found", HttpStatus.NOT_FOUND);
 				}),
 			),
 		);
@@ -232,5 +234,29 @@ export class UserService {
 		});
 
 		return "deleted";
+	}
+
+	async findPaymentSlipsByCustomer(documentNumber: string) {
+		const paymentSlips = await this.prisma.paymentSlip.findMany({
+			where: {
+				documentNumber: documentNumber,
+			},
+		});
+		if (!paymentSlips.length) {
+			throw new HttpException("No payment slips found for this customer", HttpStatus.NOT_FOUND);
+		}
+		return paymentSlips;
+	}
+
+	async downloadPaymentSlip(slipId: number) {
+		const paymentSlip = await this.prisma.paymentSlip.findUnique({
+			where: { id: slipId },
+		});
+		if (!paymentSlip) {
+			throw new HttpException("Payment slip not found", HttpStatus.NOT_FOUND);
+		}
+
+		const filePath = join(__dirname, "../../boletos", `boleto_${slipId}.pdf`);
+		return createReadStream(filePath);
 	}
 }
