@@ -25,6 +25,7 @@ export class ClientStore {
 	public selectedInstallments = new AttributeShelf<InstallmentType[]>([]);
 	public installmentsTotalValue = new AttributeShelf<number>(0);
 	public paymentSlip = new AttributeShelf<string>("");
+	public paymentSlips = new AttributeShelf<apiTypes.PaymentSlip[]>([]);
 
 	constructor() {
 		makeObservable(this);
@@ -51,8 +52,9 @@ export class ClientStore {
 		try {
 			const client = await api.getClient(documentNumber);
 			this.client.set(client);
-		} catch (e) {
-			window.console.error(e);
+		} catch (error) {
+			console.error("Search client error:", error);
+			throw error;
 		}
 	};
 
@@ -71,6 +73,25 @@ export class ClientStore {
 			this.installments.set(installments);
 		} catch (e) {
 			window.console.error(e);
+		}
+	};
+
+	public fetchPaymentSlips = async (): Promise<void> => {
+		try {
+			const paymentSlips = await api.getPaymentSlips(clientStore.client.value.documentNumber);
+			this.paymentSlips.set(paymentSlips);
+		} catch (e) {
+			console.error("Get Payment Slips error:", e);
+			throw e;
+		}
+	};
+
+	public downloadPaymentSlip = async (slipId: number): Promise<Blob> => {
+		try {
+			return await api.downloadPaymentSlip(slipId);
+		} catch (e) {
+			console.error("Download Payment Slip error:", e);
+			throw e;
 		}
 	};
 }

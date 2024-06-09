@@ -5,12 +5,8 @@ export const COOKIE_ACCESS_TOKEN_KEY = "PARCELADMIN_APP_TOKEN";
 
 export class AuthStore {
 	public fetchAccessToken = async (email: string, password: string): Promise<void> => {
-		try {
-			const token = await api.getAuthorizationToken(email, password);
-			this.setCookie(COOKIE_ACCESS_TOKEN_KEY, token.access_token);
-		} catch (error) {
-			console.log(error);
-		}
+		const token = await api.getAuthorizationToken(email, password);
+		this.setCookie(COOKIE_ACCESS_TOKEN_KEY, token.access_token);
 	};
 
 	public setCookie(cname: string, cvalue: string) {
