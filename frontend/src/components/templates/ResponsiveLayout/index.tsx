@@ -1,4 +1,5 @@
 import {
+	Box,
 	Button,
 	Center,
 	Flex,
@@ -6,6 +7,9 @@ import {
 	GridItem,
 	Image,
 	Stack,
+	Tab,
+	TabList,
+	Tabs,
 	Text,
 	useColorMode,
 	useColorModeValue,
@@ -14,12 +18,14 @@ import { AuthStore } from "../../../stores/AuthStore";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/organisms/Navbar";
 import { themes } from "@/themes/theme-tokens";
+import Link from "next/link";
 
 interface IProps {
 	children: React.ReactNode;
+	index?: number;
 }
 
-export const ResponsiveLayout = ({ children }: IProps) => {
+export const ResponsiveLayout = ({ children, index }: IProps) => {
 	const { isAuthenticated, logout } = new AuthStore();
 	const router = useRouter();
 	const formBackGround = useColorModeValue(
@@ -64,6 +70,20 @@ export const ResponsiveLayout = ({ children }: IProps) => {
 						<Image src="https://cdn-icons-png.flaticon.com/128/639/639365.png" alt="LOGO" width={12} />
 					</Flex>
 				</Stack>
+				<Box>
+					<Tabs background={formBackGround} colorScheme="teal" align="center" gap={"50px"} size={"lg"} index={index}>
+						<TabList flexDirection={"column"}>
+							<Tab>
+								<Link href={"searchUser"}>Buscar Cliente</Link>
+							</Tab>
+						</TabList>
+						<TabList>
+							<Tab>
+								<Link href={"paymentSlip"}>Boletos</Link>
+							</Tab>
+						</TabList>
+					</Tabs>
+				</Box>
 				<Center paddingBottom={20}>
 					<Stack align={"center"} gap={12}>
 						<Text fontSize={24}>ParcelAdmin</Text>
