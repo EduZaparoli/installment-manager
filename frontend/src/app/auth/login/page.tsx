@@ -1,5 +1,5 @@
 "use client";
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthStore } from "@/stores/AuthStore";
@@ -13,6 +13,7 @@ const Home = () => {
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const toast = useToast();
 
 	const onContinue = async () => {
 		setIsSubmitted(true);
@@ -27,6 +28,14 @@ const Home = () => {
 			router.push("/searchUser");
 		} catch (error) {
 			console.log(error);
+			toast({
+				title: "Erro.",
+				description: "Usuário ou senha inválidos.",
+				status: "error",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
 		} finally {
 			setIsLoading(false);
 		}
