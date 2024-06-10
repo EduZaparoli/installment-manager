@@ -58,6 +58,7 @@ export class UserService {
 								value: totalAmount,
 								payer: customerInfo.name,
 								documentNumber: customerInfo.cpf,
+								payerEmail: customerInfo.email,
 								barCode: ticket.barcode_data,
 								dueDate: new Date(ticket.data_vencimento),
 								issuanceDate: new Date(ticket.data_emissao),
@@ -101,6 +102,24 @@ export class UserService {
 				}
 			});
 		});
+	}
+
+	async resendPaymentSlipEmail(slipId: number): Promise<void> {
+		const paymentSlip = await this.prisma.paymentSlip.findUnique({
+			where: { id: slipId },
+		});
+
+		if (!paymentSlip) {
+			throw new Error("Boleto não encontrado");
+		}
+
+		await this.sendPaymentSlipEmail(
+			paymentSlip.payerEmail,
+			paymentSlip.payer,
+			paymentSlip.value,
+			paymentSlip.barCode,
+			paymentSlip.pdf,
+		);
 	}
 
 	async sendPaymentSlipEmail(

@@ -14,6 +14,7 @@ const SearchUserPage = observer(() => {
 	useEffect(() => {
 		clientStore.installments.value = [];
 		clientStore.installmentsTotalValue.value = 0;
+		localStorage.setItem("selectedProduct", "");
 	}, []);
 
 	const handleSearchUser = async (cpf: string) => {

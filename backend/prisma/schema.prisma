@@ -27,6 +27,7 @@ model PaymentSlip {
   value          Float
   payer          String
   documentNumber String
+  payerEmail     String
   status         String
   paymentDate    DateTime?
   pdf            Bytes?

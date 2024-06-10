@@ -118,4 +118,14 @@ export class UserController {
 	async downloadPaymentSlip(@Param("id") id: number, @Res() res: Response) {
 		return this.userService.downloadPaymentSlip(id, res);
 	}
+
+	@Post("payment-slip/:id/resend")
+	async resendEmail(@Param("id") id: number, @Res() res) {
+		try {
+			await this.userService.resendPaymentSlipEmail(id);
+			return res.status(200).send({ message: "Boleto reenviado com sucesso" });
+		} catch (error) {
+			return res.status(500).send({ error: "Erro ao reenviar o boleto" });
+		}
+	}
 }
