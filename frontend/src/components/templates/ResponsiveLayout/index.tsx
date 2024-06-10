@@ -92,7 +92,7 @@ export const ResponsiveLayout = ({ children, index }: IProps) => {
 								<Link href={"searchUser"}>Buscar Cliente</Link>
 							</Tab>
 						</TabList>
-						<TabList>
+						<TabList flexDirection={"column"}>
 							<Tab>
 								<Link href={"paymentSlip"}>Boletos</Link>
 							</Tab>
