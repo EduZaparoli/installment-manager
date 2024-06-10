@@ -1,4 +1,5 @@
 import { themes } from "@/themes/theme-tokens";
+import { mediaQuery } from "@/themes/use-media-query";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
 	Avatar,
@@ -22,7 +23,7 @@ interface IProps {
 export const Navbar = ({ avatar, theme, logo, justifyContent = "space-between" }: IProps) => {
 	const { colorMode, toggleColorMode } = useColorMode();
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 
 	return (
 		<Flex

@@ -27,6 +27,7 @@ import { themes } from "@/themes/theme-tokens";
 import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL";
 import { TypePaymentSliptEnum } from "@/enum/installment";
+import { mediaQuery } from "@/themes/use-media-query";
 
 interface PaymentSlip {
 	id: number;
@@ -48,7 +49,7 @@ const PaymentSlipsPage = observer(() => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const toast = useToast();
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 
 	const handleOpenModal = () => {
 		setIsOpen(true);

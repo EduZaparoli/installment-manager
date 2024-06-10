@@ -5,6 +5,7 @@ import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { TypeInstallmentEnum } from "@/enum/installment";
 import { useStore } from "@/stores/storeProvider";
 import { themes } from "@/themes/theme-tokens";
+import { mediaQuery } from "@/themes/use-media-query";
 import { Box, Button, Flex, Select, Text, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 	const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
 	const [installmentsData, setInstallmentsData] = useState<InstallmentType[]>([]);
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 
 	const onContinue = () => {
 		clientStore.setSelectedInstallments(installmentsData.filter((inst) => inst.checkboxEnabled));

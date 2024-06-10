@@ -3,13 +3,14 @@ import { Box, Button, Grid, GridItem, Stack, Text, useMediaQuery } from "@chakra
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 import { useState } from "react";
+import { mediaQuery } from "@/themes/use-media-query";
 
 interface IProps {
 	onSearchUser(cpf: string): Promise<void>;
 }
 
 const SearchUser = ({ onSearchUser }: IProps) => {
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleOpenModal = () => {

@@ -21,6 +21,7 @@ import { Navbar } from "@/components/organisms/Navbar";
 import { themes } from "@/themes/theme-tokens";
 import Link from "next/link";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { mediaQuery } from "@/themes/use-media-query";
 
 interface IProps {
 	children: React.ReactNode;
@@ -39,7 +40,7 @@ export const ResponsiveLayout = ({ children, index }: IProps) => {
 		themes.colors.primary.mainPrimaryDark,
 	);
 	const { colorMode, toggleColorMode } = useColorMode();
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 
 	if (!isAuthenticated) {
 		router.push("/auth/login");

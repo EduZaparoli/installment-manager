@@ -1,5 +1,6 @@
 "use client";
 import { themes } from "@/themes/theme-tokens";
+import { mediaQuery } from "@/themes/use-media-query";
 import { Box, Button, Flex, Heading, Input, Link, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
 
 interface IProps {
@@ -30,7 +31,7 @@ export const RegisterContainer = ({
 	onContinue,
 }: IProps) => {
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 
 	return (
 		<Flex direction={"column"} background={formBackGround} pt={16} pb={16} pe={24} pl={24} rounded={24} margin={5}>

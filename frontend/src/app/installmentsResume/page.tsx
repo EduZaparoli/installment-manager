@@ -6,12 +6,13 @@ import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { TypeInstallmentEnum } from "@/enum/installment";
 import { api } from "@/service/APIService";
 import { useStore } from "@/stores/storeProvider";
+import { mediaQuery } from "@/themes/use-media-query";
 import { Box, Button, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const InstallmentsResume = () => {
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 	const router = useRouter();
 	const { clientStore } = useStore();
 	const selectedInstallments = clientStore.selectedInstallments.value;

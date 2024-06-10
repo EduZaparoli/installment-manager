@@ -1,12 +1,13 @@
 import { Card } from "@/components/atoms/Card";
 import { useStore } from "@/stores/storeProvider";
+import { mediaQuery } from "@/themes/use-media-query";
 import { formatDocumentNumber } from "@/utils/formatDocumentNumber";
 import { formatCellphoneNumber } from "@/utils/formatPhoneNumber";
 import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 
 export const CustomerCard = observer(() => {
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 	const { clientStore } = useStore();
 	const customer = clientStore.client.value;
 

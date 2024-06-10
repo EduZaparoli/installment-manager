@@ -2,6 +2,7 @@ import { InstallmentType } from "@/app/selectInstallmentsAdvance/page";
 import { Installment } from "@/components/molecules/Installment";
 import { useStore } from "@/stores/storeProvider";
 import { themes } from "@/themes/theme-tokens";
+import { mediaQuery } from "@/themes/use-media-query";
 import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL";
 import { Box, Flex, Text, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
 import { useState } from "react";
@@ -13,7 +14,7 @@ interface IProps {
 }
 
 export const InstallmentList: React.FC<IProps> = ({ installmentsData, checkbox, onCheckboxChange }) => {
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 	const { clientStore } = useStore();
 	const [_, setTotal] = useState(0);
 

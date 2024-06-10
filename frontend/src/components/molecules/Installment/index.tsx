@@ -1,3 +1,4 @@
+import { mediaQuery } from "@/themes/use-media-query";
 import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL";
 import { Box, Checkbox, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -12,7 +13,7 @@ interface IProps {
 }
 
 export const Installment: React.FC<IProps> = ({ date, number, value, checkbox, checkboxEnabled, onCheckboxChange }) => {
-	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
+	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 	const [isChecked, setIsChecked] = useState(checkboxEnabled);
 
 	useEffect(() => {
