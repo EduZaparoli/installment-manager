@@ -5,7 +5,6 @@ import {
 	Flex,
 	Grid,
 	GridItem,
-	Image,
 	Stack,
 	Tab,
 	TabList,
@@ -22,6 +21,7 @@ import { themes } from "@/themes/theme-tokens";
 import Link from "next/link";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { mediaQuery } from "@/themes/use-media-query";
+import Image from "next/image";
 
 interface IProps {
 	children: React.ReactNode;
@@ -71,11 +71,7 @@ export const ResponsiveLayout = ({ children, index }: IProps) => {
 			>
 				<Stack gap={20}>
 					<Flex alignSelf={"center"}>
-						<Image
-							src="https://cdn-icons-png.flaticon.com/128/639/639365.png"
-							alt="LOGO"
-							width={isSmallScreen ? 8 : 12}
-						/>
+						<Image src="/images/logo.png" alt="LOGO" width={isSmallScreen ? 32 : 48} height={isSmallScreen ? 8 : 12} />
 					</Flex>
 				</Stack>
 				<Box>

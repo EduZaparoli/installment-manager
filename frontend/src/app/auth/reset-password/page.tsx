@@ -27,6 +27,14 @@ const ResetPassword = () => {
 			if (password === newPassword) {
 				await api.resetPasswordUser(email, newPassword);
 				router.push("/auth/login");
+				toast({
+					title: "Sucesso.",
+					description: "A senha foi atualizada.",
+					status: "success",
+					duration: 5000,
+					position: "top",
+					isClosable: true,
+				});
 			} else {
 				toast({
 					title: "Erro.",

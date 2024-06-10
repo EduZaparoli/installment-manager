@@ -1,5 +1,5 @@
 "use client";
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthStore } from "@/stores/AuthStore";
@@ -16,6 +16,7 @@ const Register = () => {
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const toast = useToast();
 
 	const onContinue = async () => {
 		setIsSubmitted(true);
@@ -29,8 +30,24 @@ const Register = () => {
 			await api.postUser(firstName, lastName, email, password);
 			await fetchAccessToken(email, password);
 			router.push("/searchUser");
+			toast({
+				title: "Sucesso.",
+				description: "Usuário Criado.",
+				status: "success",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
 		} catch (error) {
 			console.log(error);
+			toast({
+				title: "Erro.",
+				description: "Não foi possível criar o usuário.",
+				status: "error",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
 		} finally {
 			setIsLoading(false);
 		}
