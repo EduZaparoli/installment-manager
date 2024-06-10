@@ -6,11 +6,12 @@ import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { TypeInstallmentEnum } from "@/enum/installment";
 import { api } from "@/service/APIService";
 import { useStore } from "@/stores/storeProvider";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const InstallmentsResume = () => {
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 	const router = useRouter();
 	const { clientStore } = useStore();
 	const selectedInstallments = clientStore.selectedInstallments.value;
@@ -84,15 +85,20 @@ const InstallmentsResume = () => {
 			<CustomerSection />
 			<Flex flexDirection={"column"} w={"100%"} align={"center"} alignSelf={"center"} margin={"40px 0 104px 0"}>
 				<Box width={"40%"}>
-					<Text paddingBottom={"20px"} fontSize={"24px"}>
+					<Text paddingBottom={"20px"} fontSize={isSmallScreen ? "18px" : "20px"}>
 						Resumo das parcelas
 					</Text>
 					<InstallmentList installmentsData={installmentsData} />
 					<Flex gap={"16px"} flexDirection={"row"} marginTop={"40px"}>
-						<Button colorScheme={"teal"} onClick={onBack}>
+						<Button size={isSmallScreen ? "sm" : "md"} colorScheme={"teal"} onClick={onBack}>
 							Voltar
 						</Button>
-						<Button colorScheme={"teal"} onClick={handleOpenModal} isDisabled={disable}>
+						<Button
+							size={isSmallScreen ? "sm" : "md"}
+							colorScheme={"teal"}
+							onClick={handleOpenModal}
+							isDisabled={disable}
+						>
 							Confirmar
 						</Button>
 					</Flex>

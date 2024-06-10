@@ -5,7 +5,7 @@ import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { TypeInstallmentEnum } from "@/enum/installment";
 import { useStore } from "@/stores/storeProvider";
 import { themes } from "@/themes/theme-tokens";
-import { Box, Button, Flex, Select, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Flex, Select, Text, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -25,6 +25,7 @@ const SelectInstallmentsAdvancePage = observer(() => {
 	const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
 	const [installmentsData, setInstallmentsData] = useState<InstallmentType[]>([]);
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 
 	const onContinue = () => {
 		clientStore.setSelectedInstallments(installmentsData.filter((inst) => inst.checkboxEnabled));
@@ -90,11 +91,12 @@ const SelectInstallmentsAdvancePage = observer(() => {
 			<CustomerSection />
 			<Flex flexDirection={"column"} w={"100%"} align={"center"} alignSelf={"center"} margin={"40px 0 104px 0"}>
 				<Box width={"40%"}>
-					<Text paddingBottom={"20px"} fontSize={"24px"}>
+					<Text paddingBottom={"20px"} fontSize={isSmallScreen ? "18px" : "20px"}>
 						Selecione o produto e as parcelas
 					</Text>
 					<Box pb={"20px"}>
 						<Select
+							fontSize={isSmallScreen ? "14px" : "16px"}
 							background={formBackGround}
 							variant="outline"
 							placeholder="Selecione um produto"
@@ -102,7 +104,11 @@ const SelectInstallmentsAdvancePage = observer(() => {
 							value={selectedProduct !== null ? selectedProduct.toString() : ""}
 						>
 							{productNames.map((product) => (
-								<option key={product.id} value={product.id.toString()}>
+								<option
+									style={{ fontSize: isSmallScreen ? "14px" : "16px" }}
+									key={product.id}
+									value={product.id.toString()}
+								>
 									{product.name}
 								</option>
 							))}
@@ -110,10 +116,15 @@ const SelectInstallmentsAdvancePage = observer(() => {
 					</Box>
 					<InstallmentList installmentsData={installmentsData} checkbox onCheckboxChange={handleCheckboxChange} />
 					<Flex gap={"16px"} flexDirection={"row"} marginTop={"40px"}>
-						<Button colorScheme={"teal"} onClick={onBack}>
+						<Button size={isSmallScreen ? "sm" : "md"} colorScheme={"teal"} onClick={onBack}>
 							Voltar
 						</Button>
-						<Button colorScheme={"teal"} onClick={onContinue} isDisabled={isDisabled}>
+						<Button
+							size={isSmallScreen ? "sm" : "md"}
+							colorScheme={"teal"}
+							onClick={onContinue}
+							isDisabled={isDisabled}
+						>
 							Continuar
 						</Button>
 					</Flex>

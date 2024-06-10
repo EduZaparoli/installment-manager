@@ -13,12 +13,14 @@ import {
 	Text,
 	useColorMode,
 	useColorModeValue,
+	useMediaQuery,
 } from "@chakra-ui/react";
 import { AuthStore } from "../../../stores/AuthStore";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/organisms/Navbar";
 import { themes } from "@/themes/theme-tokens";
 import Link from "next/link";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 interface IProps {
 	children: React.ReactNode;
@@ -37,6 +39,7 @@ export const ResponsiveLayout = ({ children, index }: IProps) => {
 		themes.colors.primary.mainPrimaryDark,
 	);
 	const { colorMode, toggleColorMode } = useColorMode();
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 
 	if (!isAuthenticated) {
 		router.push("/auth/login");
@@ -67,11 +70,22 @@ export const ResponsiveLayout = ({ children, index }: IProps) => {
 			>
 				<Stack gap={20}>
 					<Flex alignSelf={"center"}>
-						<Image src="https://cdn-icons-png.flaticon.com/128/639/639365.png" alt="LOGO" width={12} />
+						<Image
+							src="https://cdn-icons-png.flaticon.com/128/639/639365.png"
+							alt="LOGO"
+							width={isSmallScreen ? 8 : 12}
+						/>
 					</Flex>
 				</Stack>
 				<Box>
-					<Tabs background={formBackGround} colorScheme="teal" align="center" gap={"50px"} size={"lg"} index={index}>
+					<Tabs
+						background={formBackGround}
+						colorScheme="teal"
+						align="center"
+						gap={"50px"}
+						size={isSmallScreen ? "sm" : "lg"}
+						index={index}
+					>
 						<TabList flexDirection={"column"}>
 							<Tab>
 								<Link href={"searchUser"}>Buscar Cliente</Link>
@@ -86,14 +100,21 @@ export const ResponsiveLayout = ({ children, index }: IProps) => {
 				</Box>
 				<Center paddingBottom={20}>
 					<Stack align={"center"} gap={12}>
-						<Text fontSize={24}>ParcelAdmin</Text>
+						<Text fontSize={isSmallScreen ? 16 : 24}>ParcelAdmin</Text>
 						<Stack gap={3}>
-							<Button colorScheme="teal" size={"sm"} onClick={toggleColorMode} boxShadow="base" p="1" rounded="md">
-								{colorMode === "light" ? "Dark" : "Light"} Theme
+							<Button
+								colorScheme="teal"
+								size={isSmallScreen ? "xs" : "sm"}
+								onClick={toggleColorMode}
+								boxShadow="base"
+								p="1"
+								rounded="md"
+							>
+								{colorMode === "light" ? <MoonIcon /> : <SunIcon />}
 							</Button>
 							<Button
 								colorScheme="teal"
-								size={"sm"}
+								size={isSmallScreen ? "xs" : "sm"}
 								onClick={userLogout}
 								boxShadow="base"
 								paddingLeft={8}

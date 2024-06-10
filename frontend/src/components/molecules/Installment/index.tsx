@@ -1,5 +1,5 @@
 import { formatCurrencyBRL } from "@/utils/formatCurrencyBRL";
-import { Box, Checkbox, Flex, Text } from "@chakra-ui/react";
+import { Box, Checkbox, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 interface IProps {
@@ -12,6 +12,7 @@ interface IProps {
 }
 
 export const Installment: React.FC<IProps> = ({ date, number, value, checkbox, checkboxEnabled, onCheckboxChange }) => {
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 	const [isChecked, setIsChecked] = useState(checkboxEnabled);
 
 	useEffect(() => {
@@ -38,12 +39,16 @@ export const Installment: React.FC<IProps> = ({ date, number, value, checkbox, c
 				<Flex alignSelf={"center"}>
 					{checkbox && <Checkbox colorScheme={"teal"} isChecked={isChecked} onChange={handleCheckboxChange} />}
 					<Box paddingLeft={checkbox ? "15px" : "0px"}>
-						<Text fontWeight={"medium"}>{number}</Text>
-						<Text fontWeight={"medium"}>{date}</Text>
+						<Text fontSize={isSmallScreen ? "14px" : "16px"} fontWeight={"medium"}>
+							{number}
+						</Text>
+						<Text fontSize={isSmallScreen ? "14px" : "16px"} fontWeight={"medium"}>
+							{date}
+						</Text>
 					</Box>
 				</Flex>
 			</Flex>
-			<Text fontWeight={"medium"} alignSelf={"end"}>
+			<Text fontSize={isSmallScreen ? "14px" : "16px"} fontWeight={"medium"} alignSelf={"end"}>
 				{formatCurrencyBRL(value)}
 			</Text>
 		</Flex>

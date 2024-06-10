@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button, Grid, GridItem, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Grid, GridItem, Stack, Text, useMediaQuery } from "@chakra-ui/react";
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 import { useState } from "react";
@@ -9,6 +9,7 @@ interface IProps {
 }
 
 const SearchUser = ({ onSearchUser }: IProps) => {
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleOpenModal = () => {
@@ -24,11 +25,13 @@ const SearchUser = ({ onSearchUser }: IProps) => {
 			<Grid justifyItems={"center"} alignItems={"center"} marginLeft={8} marginRight={8} height={"70%"}>
 				<GridItem>
 					<Stack gap={3} padding={"20px"}>
-						<Text fontSize={"24px"}>Busque pelo CPF de um cliente</Text>
-						<Text>Para acessar a área de atendimento, você precisa informar o CPF do cliente</Text>
+						<Text fontSize={isSmallScreen ? "18px" : "24px"}>Busque pelo CPF de um cliente</Text>
+						<Text fontSize={isSmallScreen ? "14px" : "18px"}>
+							Para acessar a área de atendimento, você precisa informar o CPF do cliente
+						</Text>
 					</Stack>
 					<Box paddingLeft={"20px"} paddingTop={"8px"}>
-						<Button colorScheme="teal" onClick={handleOpenModal}>
+						<Button colorScheme="teal" onClick={handleOpenModal} size={isSmallScreen ? "sm" : "md"}>
 							Buscar CPF
 						</Button>
 					</Box>

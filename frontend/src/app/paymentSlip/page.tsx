@@ -17,7 +17,11 @@ import {
 	Tr,
 	useColorModeValue,
 	useToast,
+	useMediaQuery,
+	IconButton,
+	ButtonGroup,
 } from "@chakra-ui/react";
+import { ExternalLinkIcon, DownloadIcon, EmailIcon } from "@chakra-ui/icons";
 import { ResponsiveLayout } from "@/components/templates/ResponsiveLayout";
 import { themes } from "@/themes/theme-tokens";
 import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
@@ -44,6 +48,7 @@ const PaymentSlipsPage = observer(() => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const toast = useToast();
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 
 	const handleOpenModal = () => {
 		setIsOpen(true);
@@ -160,7 +165,7 @@ const PaymentSlipsPage = observer(() => {
 						<Text fontWeight={"medium"}>Nome: {clientStore.client.value.name}</Text>
 					</Box>
 
-					<Table variant="simple">
+					<Table variant="simple" size="sm">
 						<Thead>
 							<Tr>
 								<Th>ID</Th>
@@ -193,23 +198,32 @@ const PaymentSlipsPage = observer(() => {
 										<Td>{new Date(slip.dueDate).toLocaleDateString()}</Td>
 										<Td>{formatCurrencyBRL(slip.value)}</Td>
 										<Td>
-											<Button colorScheme="teal" size="sm" mr={2} onClick={() => handleView(slip.html)}>
-												Exibir
-											</Button>
-											<Button colorScheme="teal" size="sm" mr={2} onClick={() => handleDownload(slip.id)}>
-												Baixar PDF
-											</Button>
-											{slip.status === TypePaymentSliptEnum.STATUS_CREATE && (
-												<Button
+											<ButtonGroup spacing="2">
+												<IconButton
 													colorScheme="teal"
+													icon={<ExternalLinkIcon />}
+													aria-label="Exibir"
 													size="sm"
-													onClick={() => handleResendEmail(slip.id)}
-													isLoading={isLoading}
-													loadingText="Reenviar"
-												>
-													Reenviar
-												</Button>
-											)}
+													onClick={() => handleView(slip.html)}
+												/>
+												<IconButton
+													colorScheme="teal"
+													icon={<DownloadIcon />}
+													aria-label="Baixar PDF"
+													size="sm"
+													onClick={() => handleDownload(slip.id)}
+												/>
+												{slip.status === TypePaymentSliptEnum.STATUS_CREATE && (
+													<IconButton
+														colorScheme="teal"
+														icon={<EmailIcon />}
+														aria-label="Reenviar"
+														size="sm"
+														onClick={() => handleResendEmail(slip.id)}
+														isLoading={isLoading}
+													/>
+												)}
+											</ButtonGroup>
 										</Td>
 									</Tr>
 								))}
@@ -218,7 +232,7 @@ const PaymentSlipsPage = observer(() => {
 					</Table>
 				</Box>
 				<Box paddingTop={"50px"}>
-					<Button colorScheme="teal" onClick={handleOpenModal}>
+					<Button size={isSmallScreen ? "sm" : "md"} colorScheme="teal" onClick={handleOpenModal}>
 						Buscar CPF
 					</Button>
 				</Box>

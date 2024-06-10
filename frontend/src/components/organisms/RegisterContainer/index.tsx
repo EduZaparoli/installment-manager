@@ -1,6 +1,6 @@
 "use client";
 import { themes } from "@/themes/theme-tokens";
-import { Box, Button, Flex, Heading, Input, Link, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Input, Link, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
 
 interface IProps {
 	isLoading: boolean;
@@ -30,11 +30,15 @@ export const RegisterContainer = ({
 	onContinue,
 }: IProps) => {
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 
 	return (
 		<Flex direction={"column"} background={formBackGround} pt={16} pb={16} pe={24} pl={24} rounded={24} margin={5}>
-			<Heading mb={6}>Cadastrar</Heading>
+			<Heading fontSize={isSmallScreen ? "30px" : "36px"} mb={6}>
+				Cadastrar
+			</Heading>
 			<Input
+				size={isSmallScreen ? "sm" : "md"}
 				placeholder="Nome"
 				variant={"filled"}
 				mb={3}
@@ -44,6 +48,7 @@ export const RegisterContainer = ({
 				isInvalid={isSubmitted && firstName === ""}
 			/>
 			<Input
+				size={isSmallScreen ? "sm" : "md"}
 				placeholder="Sobrenome"
 				variant={"filled"}
 				mb={3}
@@ -53,6 +58,7 @@ export const RegisterContainer = ({
 				isInvalid={isSubmitted && lastName === ""}
 			/>
 			<Input
+				size={isSmallScreen ? "sm" : "md"}
 				placeholder="E-mail"
 				variant={"filled"}
 				mb={3}
@@ -62,6 +68,7 @@ export const RegisterContainer = ({
 				isInvalid={isSubmitted && email === ""}
 			/>
 			<Input
+				size={isSmallScreen ? "sm" : "md"}
 				placeholder="Senha"
 				variant={"filled"}
 				mb={6}
@@ -70,11 +77,19 @@ export const RegisterContainer = ({
 				value={password}
 				isInvalid={isSubmitted && password === ""}
 			/>
-			<Button onClick={onContinue} colorScheme="teal" isLoading={isLoading} loadingText="Loading">
+			<Button
+				size={isSmallScreen ? "sm" : "md"}
+				onClick={onContinue}
+				colorScheme="teal"
+				isLoading={isLoading}
+				loadingText="Loading"
+			>
 				Cadastrar
 			</Button>
 			<Box alignSelf={"center"} paddingTop={"4"}>
-				<Link href="/auth/login">Voltar</Link>
+				<Link fontSize={isSmallScreen ? "14px" : "16px"} href="/auth/login">
+					Voltar
+				</Link>
 			</Box>
 		</Flex>
 	);
