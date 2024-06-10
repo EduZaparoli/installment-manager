@@ -1,8 +1,20 @@
 "use client";
 import { themes } from "@/themes/theme-tokens";
 import { mediaQuery } from "@/themes/use-media-query";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Button, Flex, Heading, Input, Link, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
+import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Input,
+	InputGroup,
+	InputRightElement,
+	Link,
+	useColorModeValue,
+	useMediaQuery,
+} from "@chakra-ui/react";
+import { useState } from "react";
 
 interface IProps {
 	resetPassword?: boolean;
@@ -31,9 +43,13 @@ export const LoginContainer = ({
 }: IProps) => {
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
 	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
+	const [showPasswod, setShowPassword] = useState(false);
+	const [showNewPassword, setShowNewPasswod] = useState(false);
+	const handleClickPassword = () => setShowPassword(!showPasswod);
+	const handleClickNewPassword = () => setShowNewPasswod(!showNewPassword);
 
 	return (
-		<Flex direction={"column"} background={formBackGround} p={24} rounded={24} margin={5}>
+		<Flex shadow={"md"} direction={"column"} background={formBackGround} p={24} rounded={24} margin={5}>
 			<Heading fontSize={isSmallScreen ? "30px" : "36px"} mb={6}>
 				{resetPassword ? "Redefinir Senha" : "Log in"}
 			</Heading>
@@ -47,27 +63,41 @@ export const LoginContainer = ({
 				value={email}
 				isInvalid={isSubmitted && email === ""}
 			/>
-			<Input
-				size={isSmallScreen ? "sm" : "md"}
-				placeholder={resetPassword ? "Nova Senha" : "Senha"}
-				variant={"filled"}
-				mb={resetPassword ? 3 : 6}
-				type="password"
-				onChange={(e) => onPassword(e.target.value)}
-				value={password}
-				isInvalid={isSubmitted && password === ""}
-			/>
-			{resetPassword && (
+			<InputGroup size="md">
 				<Input
 					size={isSmallScreen ? "sm" : "md"}
-					placeholder="Nova Senha"
+					placeholder={resetPassword ? "Nova Senha" : "Senha"}
 					variant={"filled"}
-					mb={6}
-					type="password"
-					onChange={(e) => onNewPassword && onNewPassword(e.target.value)}
-					value={newPassword}
-					isInvalid={isSubmitted && newPassword === ""}
+					mb={resetPassword ? 3 : 6}
+					type={showPasswod ? "text" : "password"}
+					onChange={(e) => onPassword(e.target.value)}
+					value={password}
+					isInvalid={isSubmitted && password === ""}
 				/>
+				<InputRightElement width="4.5rem">
+					<Button variant={"unstyled"} h="1.75rem" size="sm" onClick={handleClickPassword}>
+						{showPasswod ? <ViewOffIcon /> : <ViewIcon />}
+					</Button>
+				</InputRightElement>
+			</InputGroup>
+			{resetPassword && (
+				<InputGroup size="md">
+					<Input
+						size={isSmallScreen ? "sm" : "md"}
+						placeholder="Nova Senha"
+						variant={"filled"}
+						mb={6}
+						type={showNewPassword ? "text" : "password"}
+						onChange={(e) => onNewPassword && onNewPassword(e.target.value)}
+						value={newPassword}
+						isInvalid={isSubmitted && newPassword === ""}
+					/>
+					<InputRightElement width="4.5rem">
+						<Button variant={"unstyled"} h="1.75rem" size="sm" onClick={handleClickNewPassword}>
+							{showNewPassword ? <ViewOffIcon /> : <ViewIcon />}
+						</Button>
+					</InputRightElement>
+				</InputGroup>
 			)}
 			<Button
 				size={isSmallScreen ? "sm" : "md"}

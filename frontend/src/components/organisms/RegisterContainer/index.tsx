@@ -1,7 +1,20 @@
 "use client";
 import { themes } from "@/themes/theme-tokens";
 import { mediaQuery } from "@/themes/use-media-query";
-import { Box, Button, Flex, Heading, Input, Link, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Input,
+	InputGroup,
+	InputRightElement,
+	Link,
+	useColorModeValue,
+	useMediaQuery,
+} from "@chakra-ui/react";
+import { useState } from "react";
 
 interface IProps {
 	isLoading: boolean;
@@ -32,9 +45,21 @@ export const RegisterContainer = ({
 }: IProps) => {
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
 	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
+	const [showPasswod, setShowPassword] = useState(false);
+	const handleClickPassword = () => setShowPassword(!showPasswod);
 
 	return (
-		<Flex direction={"column"} background={formBackGround} pt={16} pb={16} pe={24} pl={24} rounded={24} margin={5}>
+		<Flex
+			shadow={"md"}
+			direction={"column"}
+			background={formBackGround}
+			pt={16}
+			pb={16}
+			pe={24}
+			pl={24}
+			rounded={24}
+			margin={5}
+		>
 			<Heading fontSize={isSmallScreen ? "30px" : "36px"} mb={6}>
 				Cadastrar
 			</Heading>
@@ -68,16 +93,23 @@ export const RegisterContainer = ({
 				value={email}
 				isInvalid={isSubmitted && email === ""}
 			/>
-			<Input
-				size={isSmallScreen ? "sm" : "md"}
-				placeholder="Senha"
-				variant={"filled"}
-				mb={6}
-				type="password"
-				onChange={(e) => onPassword(e.target.value)}
-				value={password}
-				isInvalid={isSubmitted && password === ""}
-			/>
+			<InputGroup size="md">
+				<Input
+					size={isSmallScreen ? "sm" : "md"}
+					placeholder="Senha"
+					variant={"filled"}
+					mb={6}
+					type={showPasswod ? "text" : "password"}
+					onChange={(e) => onPassword(e.target.value)}
+					value={password}
+					isInvalid={isSubmitted && password === ""}
+				/>
+				<InputRightElement width="4.5rem">
+					<Button variant={"unstyled"} h="1.75rem" size="sm" onClick={handleClickPassword}>
+						{showPasswod ? <ViewOffIcon /> : <ViewIcon />}
+					</Button>
+				</InputRightElement>
+			</InputGroup>
 			<Button
 				size={isSmallScreen ? "sm" : "md"}
 				onClick={onContinue}

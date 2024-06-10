@@ -7,7 +7,7 @@ import { TypeInstallmentEnum } from "@/enum/installment";
 import { api } from "@/service/APIService";
 import { useStore } from "@/stores/storeProvider";
 import { mediaQuery } from "@/themes/use-media-query";
-import { Box, Button, Flex, Text, useMediaQuery } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, useMediaQuery, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -21,6 +21,7 @@ const InstallmentsResume = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isLoadingResume, setIsLoadingResume] = useState(false);
 	const [disable, setDisable] = useState(false);
+	const toast = useToast();
 
 	const installmentsData = selectedInstallments.map((installment) => ({
 		purchaseId: installment.purchaseId,
@@ -67,9 +68,25 @@ const InstallmentsResume = () => {
 		try {
 			await api.updateInstallments(purchaseId, installmentNumbers, status);
 			await clientStore.fetchPaymentSlip(totalAmount, customerInfo);
+			toast({
+				title: "Sucesso.",
+				description: "Boleto enviado.",
+				status: "success",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
 			onBack();
 		} catch (error) {
 			console.error("Error updating installments:", error);
+			toast({
+				title: "Erro.",
+				description: "Não foi possível enviar o boleto.",
+				status: "success",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
 		} finally {
 			setIsLoadingResume(false);
 		}

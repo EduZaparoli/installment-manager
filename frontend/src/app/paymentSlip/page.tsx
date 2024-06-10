@@ -159,11 +159,13 @@ const PaymentSlipsPage = observer(() => {
 		<ResponsiveLayout index={1}>
 			<Flex pt={"100px"} width={"100%"} align={"center"} justify={"center"} flexDirection={"column"}>
 				<Box width={"80%"} p={5} shadow="md" borderWidth="1px" borderRadius="md" bg={formBackGround}>
-					<Heading as="h1" size="lg" mb={4}>
+					<Heading as="h1" size={isSmallScreen ? "md" : "lg"} mb={4}>
 						Boletos do Cliente
 					</Heading>
 					<Box as="p" pb={"20px"}>
-						<Text fontWeight={"medium"}>Nome: {clientStore.client.value.name}</Text>
+						<Text fontSize={isSmallScreen ? "12px" : "16px"} fontWeight={"medium"}>
+							Nome: {clientStore.client.value.name}
+						</Text>
 					</Box>
 
 					<Table variant="simple" size="sm">

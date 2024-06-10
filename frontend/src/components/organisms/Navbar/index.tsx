@@ -1,17 +1,8 @@
 import { themes } from "@/themes/theme-tokens";
 import { mediaQuery } from "@/themes/use-media-query";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import {
-	Avatar,
-	Box,
-	Button,
-	Flex,
-	Image,
-	WrapItem,
-	useColorMode,
-	useColorModeValue,
-	useMediaQuery,
-} from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, WrapItem, useColorMode, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
+import Image from "next/image";
 
 interface IProps {
 	avatar?: React.ReactNode;
@@ -36,11 +27,9 @@ export const Navbar = ({ avatar, theme, logo, justifyContent = "space-between" }
 		>
 			{logo && (
 				<Box marginLeft={2}>
-					<Image
-						width={isSmallScreen ? 8 : 12}
-						src="https://cdn-icons-png.flaticon.com/128/639/639365.png"
-						alt="LOGO"
-					/>
+					<Flex alignSelf={"center"}>
+						<Image src="/images/logo.png" alt="LOGO" width={isSmallScreen ? 32 : 48} height={isSmallScreen ? 8 : 12} />
+					</Flex>
 				</Box>
 			)}
 			<WrapItem alignItems={"center"}>
