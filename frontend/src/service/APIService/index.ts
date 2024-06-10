@@ -6,6 +6,22 @@ import { AuthStore, COOKIE_ACCESS_TOKEN_KEY } from "@/stores/AuthStore";
 class API {
 	constructor(private api: AxiosInstance) {}
 
+	public resendPaymentSlipEmail = async (slipId: number): Promise<void> => {
+		try {
+			const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
+			const { data } = await this.api.post(`http://localhost:5000/user/payment-slip/${slipId}/resend`, {
+				headers: this.headerWithAuthentication(token),
+			});
+			return data;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new Error("Resend Payment Slip Email error: " + error.message);
+			} else {
+				throw new Error("Unknown error");
+			}
+		}
+	};
+
 	public getPaymentSlips = async (documentNumber: string): Promise<types.PaymentSlip[]> => {
 		try {
 			const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);

@@ -78,7 +78,7 @@ export class ClientStore {
 
 	public fetchPaymentSlips = async (): Promise<void> => {
 		try {
-			const paymentSlips = await api.getPaymentSlips(clientStore.client.value.documentNumber);
+			const paymentSlips = await api.getPaymentSlips(this.client.value.documentNumber);
 			this.paymentSlips.set(paymentSlips);
 		} catch (e) {
 			console.error("Get Payment Slips error:", e);
@@ -91,6 +91,15 @@ export class ClientStore {
 			return await api.downloadPaymentSlip(slipId);
 		} catch (e) {
 			console.error("Download Payment Slip error:", e);
+			throw e;
+		}
+	};
+
+	public resendPaymentSlipEmail = async (slipId: number): Promise<void> => {
+		try {
+			await api.resendPaymentSlipEmail(slipId);
+		} catch (e) {
+			console.error("Resend Payment Slip Email error:", e);
 			throw e;
 		}
 	};

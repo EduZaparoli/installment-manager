@@ -42,6 +42,7 @@ const PaymentSlipsPage = observer(() => {
 	const [paymentSlips, setPaymentSlips] = useState<PaymentSlip[]>([]);
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
 	const [isOpen, setIsOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const toast = useToast();
 
 	const handleOpenModal = () => {
@@ -99,6 +100,32 @@ const PaymentSlipsPage = observer(() => {
 				position: "top",
 				isClosable: true,
 			});
+		}
+	};
+
+	const handleResendEmail = async (slipId: number) => {
+		setIsLoading(true);
+		try {
+			await clientStore.resendPaymentSlipEmail(slipId);
+			toast({
+				title: "Sucesso.",
+				description: "Boleto reenviado por e-mail.",
+				status: "success",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
+		} catch (error) {
+			toast({
+				title: "Erro.",
+				description: "Erro ao reenviar o boleto.",
+				status: "error",
+				duration: 5000,
+				position: "top",
+				isClosable: true,
+			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -169,9 +196,20 @@ const PaymentSlipsPage = observer(() => {
 											<Button colorScheme="teal" size="sm" mr={2} onClick={() => handleView(slip.html)}>
 												Exibir
 											</Button>
-											<Button colorScheme="teal" size="sm" onClick={() => handleDownload(slip.id)}>
+											<Button colorScheme="teal" size="sm" mr={2} onClick={() => handleDownload(slip.id)}>
 												Baixar PDF
 											</Button>
+											{slip.status === TypePaymentSliptEnum.STATUS_CREATE && (
+												<Button
+													colorScheme="teal"
+													size="sm"
+													onClick={() => handleResendEmail(slip.id)}
+													isLoading={isLoading}
+													loadingText="Reenviar"
+												>
+													Reenviar
+												</Button>
+											)}
 										</Td>
 									</Tr>
 								))}
