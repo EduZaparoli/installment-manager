@@ -29,6 +29,7 @@ model PaymentSlip {
   documentNumber String
   status         String
   paymentDate    DateTime?
+  pdf            Bytes?
   PaymentSlipInstallments PaymentSlipInstallment[]
 }
 

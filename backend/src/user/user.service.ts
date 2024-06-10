@@ -10,8 +10,8 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { Client, InstallmentsResponse, PurchasesResponse } from "./entities/client.entity";
 import { CustomerInfoDto } from "./dto/customerInfo.dto";
 import * as moment from "moment";
-import { createReadStream } from "fs";
-import { join } from "path";
+import { Response } from "express";
+import * as htmlPdf from "html-pdf";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Ticket = require("node-boleto").Boleto;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -46,44 +46,49 @@ export class UserService {
 		return new Promise((resolve, reject) => {
 			ticket.renderHTML(async (html: string) => {
 				try {
-					const paymentSlip = await this.prisma.paymentSlip.create({
-						data: {
-							html,
-							paymentDate: null,
-							status: "CRIADO",
-							value: totalAmount,
-							payer: customerInfo.name,
-							documentNumber: customerInfo.cpf,
-							barCode: ticket.barcode_data,
-							dueDate: new Date(ticket.data_vencimento),
-							issuanceDate: new Date(ticket.data_emissao),
-						},
-					});
+					htmlPdf.create(html).toBuffer(async (err, buffer) => {
+						if (err) return reject(err);
 
-					const paymentSlipInstallment = await this.prisma.paymentSlipInstallment.create({
-						data: {
-							totalValue: totalAmount,
-							paymentSlipId: paymentSlip.id,
-						},
-					});
-
-					const installments = customerInfo.installments;
-					for (const installment of installments) {
-						const parsedDate = moment(installment.date, "DD/MM/YYYY").toDate();
-						await this.prisma.paymentSlipInstallmentItem.create({
+						const paymentSlip = await this.prisma.paymentSlip.create({
 							data: {
-								paymentSlipInstallmentId: paymentSlipInstallment.id,
-								purchaseId: installment.purchaseId,
-								number: installment.number,
-								date: parsedDate,
-								value: installment.value,
+								html,
+								paymentDate: null,
+								status: "CRIADO",
+								value: totalAmount,
+								payer: customerInfo.name,
+								documentNumber: customerInfo.cpf,
+								barCode: ticket.barcode_data,
+								dueDate: new Date(ticket.data_vencimento),
+								issuanceDate: new Date(ticket.data_emissao),
+								pdf: buffer,
 							},
 						});
-					}
 
-					await this.sendPaymentSlipEmail(customerInfo.email, html, ticket.barcode_data);
+						const paymentSlipInstallment = await this.prisma.paymentSlipInstallment.create({
+							data: {
+								totalValue: totalAmount,
+								paymentSlipId: paymentSlip.id,
+							},
+						});
 
-					resolve(paymentSlip);
+						const installments = customerInfo.installments;
+						for (const installment of installments) {
+							const parsedDate = moment(installment.date, "DD/MM/YYYY").toDate();
+							await this.prisma.paymentSlipInstallmentItem.create({
+								data: {
+									paymentSlipInstallmentId: paymentSlipInstallment.id,
+									purchaseId: installment.purchaseId,
+									number: installment.number,
+									date: parsedDate,
+									value: installment.value,
+								},
+							});
+						}
+
+						await this.sendPaymentSlipEmail(customerInfo.email, html, ticket.barcode_data, buffer);
+
+						resolve(paymentSlip);
+					});
 				} catch (error) {
 					reject(error);
 				}
@@ -91,13 +96,21 @@ export class UserService {
 		});
 	}
 
-	async sendPaymentSlipEmail(toEmail: string, boletoHtml: string, barcode: string) {
+	async sendPaymentSlipEmail(toEmail: string, boletoHtml: string, barcode: string, pdfBuffer: Buffer) {
 		const msg = {
 			to: toEmail,
 			from: "lethalc83@gmail.com",
 			subject: "Seu Boleto de Pagamento",
 			text: `Aqui está seu boleto de pagamento. Código de barras: ${barcode}`,
 			html: boletoHtml,
+			attachments: [
+				{
+					content: pdfBuffer.toString("base64"),
+					filename: "boleto.pdf",
+					type: "application/pdf",
+					disposition: "attachment",
+				},
+			],
 		};
 
 		try {
@@ -248,7 +261,7 @@ export class UserService {
 		return paymentSlips;
 	}
 
-	async downloadPaymentSlip(slipId: number) {
+	async downloadPaymentSlip(slipId: number, res: Response) {
 		const paymentSlip = await this.prisma.paymentSlip.findUnique({
 			where: { id: slipId },
 		});
@@ -256,7 +269,12 @@ export class UserService {
 			throw new HttpException("Payment slip not found", HttpStatus.NOT_FOUND);
 		}
 
-		const filePath = join(__dirname, "../../boletos", `boleto_${slipId}.pdf`);
-		return createReadStream(filePath);
+		if (!paymentSlip.pdf) {
+			throw new HttpException("PDF not found for this payment slip", HttpStatus.NOT_FOUND);
+		}
+
+		res.setHeader("Content-Type", "application/pdf");
+		res.setHeader("Content-Disposition", `attachment; filename="boleto_${slipId}.pdf"`);
+		res.send(paymentSlip.pdf);
 	}
 }

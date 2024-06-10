@@ -25,9 +25,9 @@ class API {
 	public downloadPaymentSlip = async (slipId: number): Promise<Blob> => {
 		try {
 			const token = new AuthStore().getCookie(COOKIE_ACCESS_TOKEN_KEY);
-			const { data } = await this.api.get(`http://localhost:5000/user/payment-slips/${slipId}/download`, {
+			const { data } = await this.api.get(`http://localhost:5000/user/download/paymentSlip/${slipId}`, {
 				headers: this.headerWithAuthentication(token),
-				responseType: "blob", // Adicione esta linha para garantir que a resposta seja tratada como um Blob
+				responseType: "blob",
 			});
 			return data;
 		} catch (error) {

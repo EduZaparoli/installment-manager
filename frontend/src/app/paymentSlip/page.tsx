@@ -87,7 +87,9 @@ const PaymentSlipsPage = observer(() => {
 			const link = document.createElement("a");
 			link.href = window.URL.createObjectURL(blob);
 			link.download = `boleto_${slipId}.pdf`;
+			document.body.appendChild(link);
 			link.click();
+			document.body.removeChild(link);
 		} catch (error) {
 			toast({
 				title: "Erro.",
