@@ -1,7 +1,7 @@
 "use client";
 import { themes } from "@/themes/theme-tokens";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Button, Flex, Heading, Input, Link, useColorModeValue } from "@chakra-ui/react";
+import { Button, Flex, Heading, Input, Link, useColorModeValue, useMediaQuery } from "@chakra-ui/react";
 
 interface IProps {
 	resetPassword?: boolean;
@@ -29,11 +29,15 @@ export const LoginContainer = ({
 	isSubmitted,
 }: IProps) => {
 	const formBackGround = useColorModeValue(themes.colors.primary.primaryLight, themes.colors.primary.primaryDark);
+	const [isSmallScreen] = useMediaQuery("(max-width: 1024px) and (max-height: 870px)");
 
 	return (
 		<Flex direction={"column"} background={formBackGround} p={24} rounded={24} margin={5}>
-			<Heading mb={6}>{resetPassword ? "Redefinir Senha" : "Log in"}</Heading>
+			<Heading fontSize={isSmallScreen ? "30px" : "36px"} mb={6}>
+				{resetPassword ? "Redefinir Senha" : "Log in"}
+			</Heading>
 			<Input
+				size={isSmallScreen ? "sm" : "md"}
 				placeholder="E-mail"
 				variant={"filled"}
 				mb={3}
@@ -43,6 +47,7 @@ export const LoginContainer = ({
 				isInvalid={isSubmitted && email === ""}
 			/>
 			<Input
+				size={isSmallScreen ? "sm" : "md"}
 				placeholder={resetPassword ? "Nova Senha" : "Senha"}
 				variant={"filled"}
 				mb={resetPassword ? 3 : 6}
@@ -53,6 +58,7 @@ export const LoginContainer = ({
 			/>
 			{resetPassword && (
 				<Input
+					size={isSmallScreen ? "sm" : "md"}
 					placeholder="Nova Senha"
 					variant={"filled"}
 					mb={6}
@@ -63,6 +69,7 @@ export const LoginContainer = ({
 				/>
 			)}
 			<Button
+				size={isSmallScreen ? "sm" : "md"}
 				onClick={onContinue}
 				colorScheme="teal"
 				rightIcon={resetPassword ? undefined : <ArrowForwardIcon />}
@@ -73,11 +80,17 @@ export const LoginContainer = ({
 			</Button>
 			<Flex alignSelf={"center"} paddingTop={"4"} direction={"column"} align={"center"} gap={2}>
 				{resetPassword ? (
-					<Link href="/auth/login">Voltar</Link>
+					<Link fontSize={isSmallScreen ? "14px" : "16px"} href="/auth/login">
+						Voltar
+					</Link>
 				) : (
 					<Flex alignSelf={"center"} paddingTop={"4"} direction={"column"} align={"center"} gap={2}>
-						<Link href="/auth/reset-password">Esqueci minha senha</Link>
-						<Link href="/auth/register">Cadastrar</Link>
+						<Link fontSize={isSmallScreen ? "14px" : "16px"} href="/auth/reset-password">
+							Esqueci minha senha
+						</Link>
+						<Link fontSize={isSmallScreen ? "14px" : "16px"} href="/auth/register">
+							Cadastrar
+						</Link>
 					</Flex>
 				)}
 			</Flex>
