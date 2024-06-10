@@ -114,17 +114,8 @@ export class UserController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Get("payment-slips/:slipId/download")
-	async downloadPaymentSlip(@Param("slipId", ParseIntPipe) slipId: number, @Res() res: Response) {
-		try {
-			const fileStream = await this.userService.downloadPaymentSlip(slipId);
-			res.set({
-				"Content-Type": "application/pdf",
-				"Content-Disposition": `attachment; filename=boleto_${slipId}.pdf`,
-			});
-			fileStream.pipe(res);
-		} catch (error) {
-			throw new HttpException(error.message, error.status);
-		}
+	@Get("download/paymentSlip/:id")
+	async downloadPaymentSlip(@Param("id") id: number, @Res() res: Response) {
+		return this.userService.downloadPaymentSlip(id, res);
 	}
 }
