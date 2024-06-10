@@ -12,6 +12,7 @@ import { CustomerInfoDto } from "./dto/customerInfo.dto";
 import * as moment from "moment";
 import { Response } from "express";
 import * as htmlPdf from "html-pdf";
+import { generateEmailHtml } from "./generateEmailHtml";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Ticket = require("node-boleto").Boleto;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -34,7 +35,7 @@ export class UserService {
 			valor: totalAmount * 100,
 			nosso_numero: "12345678",
 			numero_documento: "1234",
-			cedente: "Your Company",
+			cedente: "Lethal Company",
 			cedente_cnpj: "10.120.000/1345-00",
 			agencia: "0001",
 			codigo_cedente: "12345",
@@ -85,7 +86,13 @@ export class UserService {
 							});
 						}
 
-						await this.sendPaymentSlipEmail(customerInfo.email, html, ticket.barcode_data, buffer);
+						await this.sendPaymentSlipEmail(
+							customerInfo.email,
+							customerInfo.name,
+							totalAmount,
+							ticket.barcode_data,
+							buffer,
+						);
 
 						resolve(paymentSlip);
 					});
@@ -96,12 +103,21 @@ export class UserService {
 		});
 	}
 
-	async sendPaymentSlipEmail(toEmail: string, boletoHtml: string, barcode: string, pdfBuffer: Buffer) {
+	async sendPaymentSlipEmail(
+		toEmail: string,
+		customerName: string,
+		totalAmount: number,
+		barcode: string,
+		pdfBuffer: Buffer,
+	) {
+		const boletoHtml = await generateEmailHtml(customerName, totalAmount);
 		const msg = {
 			to: toEmail,
 			from: "lethalc83@gmail.com",
 			subject: "Seu Boleto de Pagamento",
-			text: `Aqui está seu boleto de pagamento. Código de barras: ${barcode}`,
+			text: `Olá, ${customerName},\n\nAqui está seu boleto de pagamento. Valor: R$ ${totalAmount.toFixed(
+				2,
+			)}\nCódigo de barras: ${barcode}\n\nPague preferencialmente no Bradesco.`,
 			html: boletoHtml,
 			attachments: [
 				{
