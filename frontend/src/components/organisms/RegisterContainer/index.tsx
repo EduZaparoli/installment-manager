@@ -1,4 +1,5 @@
 "use client";
+import { ModalSearchUser } from "@/components/molecules/ModalSearchUser";
 import { themes } from "@/themes/theme-tokens";
 import { mediaQuery } from "@/themes/use-media-query";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -23,11 +24,13 @@ interface IProps {
 	lastName: string;
 	email: string;
 	password: string;
+	adminCode: string;
 	onFirstName: (value: string) => void;
 	onLastName: (value: string) => void;
 	onEmail: (value: string) => void;
 	onPassword: (value: string) => void;
-	onContinue: () => void;
+	onAdminCode: (value: string) => void;
+	onContinue(adminCode: string): Promise<void>;
 }
 
 export const RegisterContainer = ({
@@ -47,6 +50,15 @@ export const RegisterContainer = ({
 	const [isSmallScreen] = useMediaQuery(mediaQuery.isLaptopOrSmallScreen);
 	const [showPasswod, setShowPassword] = useState(false);
 	const handleClickPassword = () => setShowPassword(!showPasswod);
+	const [isOpen, setIsOpen] = useState(false);
+
+	const handleOpenModal = async () => {
+		setIsOpen(true);
+	};
+
+	const handleCloseModal = () => {
+		setIsOpen(false);
+	};
 
 	return (
 		<Flex
@@ -112,7 +124,7 @@ export const RegisterContainer = ({
 			</InputGroup>
 			<Button
 				size={isSmallScreen ? "sm" : "md"}
-				onClick={onContinue}
+				onClick={handleOpenModal}
 				colorScheme="teal"
 				isLoading={isLoading}
 				loadingText="Loading"
@@ -124,6 +136,14 @@ export const RegisterContainer = ({
 					Voltar
 				</Link>
 			</Box>
+			<ModalSearchUser
+				admin
+				showInput
+				modalTitle="Código de Administrador"
+				isOpen={isOpen}
+				isClose={handleCloseModal}
+				onSearchUser={onContinue}
+			/>
 		</Flex>
 	);
 };

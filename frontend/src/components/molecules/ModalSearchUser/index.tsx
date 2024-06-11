@@ -1,3 +1,4 @@
+import { api } from "@/service/APIService";
 import { useStore } from "@/stores/storeProvider";
 import { themes } from "@/themes/theme-tokens";
 import { isValidCPF } from "@/utils/isValidCPF";
@@ -26,36 +27,52 @@ interface IProps {
 	isClose(): void;
 	modalTitle: string;
 	showInput?: boolean;
+	admin?: boolean;
 	onSearchUser?(cpf: string): Promise<void>;
 }
 
 export const ModalSearchUser = observer(
-	({ isOpen, isClose, modalTitle, showInput = false, onSend, isLoadingResume, onSearchUser }: IProps) => {
+	({
+		isOpen,
+		isClose,
+		modalTitle,
+		showInput = false,
+		admin = false,
+		onSend,
+		isLoadingResume,
+		onSearchUser,
+	}: IProps) => {
 		const formBackGround = useColorModeValue(
 			themes.colors.primary.mainprimaryLight,
 			themes.colors.primary.mainPrimaryDark,
 		);
 		const [documentNumber, setDocumentNumber] = useState("");
+		const [adminCode, setAdminCode] = useState("");
 		const [isLoading, setIsLoading] = useState(false);
 		const toast = useToast();
 		const { clientStore } = useStore();
 
 		const handleUser = async () => {
-			if (!isValidCPF(documentNumber)) {
-				toast({
-					title: "Erro",
-					description: "CPF inválido. Por favor, insira um CPF válido.",
-					status: "error",
-					duration: 5000,
-					position: "top",
-					isClosable: true,
-				});
+			if (!admin) {
+				if (!isValidCPF(documentNumber)) {
+					toast({
+						title: "Erro",
+						description: "CPF inválido. Por favor, insira um CPF válido.",
+						status: "error",
+						duration: 5000,
+						position: "top",
+						isClosable: true,
+					});
+					return;
+				}
 				return;
+			} else {
+				clientStore.setAdminCode(adminCode);
 			}
 
 			setIsLoading(true);
 			try {
-				await onSearchUser?.(documentNumber);
+				await onSearchUser?.(admin ? adminCode : documentNumber);
 				isClose();
 			} catch (error) {
 				toast({
@@ -81,11 +98,17 @@ export const ModalSearchUser = observer(
 					<ModalBody>
 						{showInput ? (
 							<Stack gap={5}>
-								<Text>Digite o CPF do cliente que deseja buscar</Text>
+								<Text>
+									{admin
+										? "Digite seu código de administrador para cadastrar o funcionário"
+										: "Digite o CPF do cliente que deseja buscar"}
+								</Text>
 								<Input
-									value={documentNumber}
-									onChange={(event) => setDocumentNumber(event.target.value)}
-									placeholder="CPF do cliente"
+									value={admin ? adminCode : documentNumber}
+									onChange={(event) =>
+										admin ? setAdminCode(event.target.value) : setDocumentNumber(event.target.value)
+									}
+									placeholder={admin ? "Código" : "CPF do cliente"}
 								/>
 							</Stack>
 						) : (
@@ -99,7 +122,7 @@ export const ModalSearchUser = observer(
 					<ModalFooter>
 						{showInput ? (
 							<Button colorScheme="teal" onClick={handleUser} mr={3} isLoading={isLoading} loadingText="Buscar">
-								Buscar
+								{admin ? "Continuar" : "Buscar"}
 							</Button>
 						) : (
 							<Button colorScheme="teal" onClick={onSend} mr={3} isLoading={isLoadingResume} loadingText="Enviar">

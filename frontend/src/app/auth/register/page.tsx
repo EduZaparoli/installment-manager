@@ -14,6 +14,7 @@ const Register = () => {
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [adminCode, setAdminCode] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const toast = useToast();
@@ -28,8 +29,7 @@ const Register = () => {
 		setIsLoading(true);
 		try {
 			await api.postUser(firstName, lastName, email, password);
-			await fetchAccessToken(email, password);
-			router.push("/searchUser");
+			router.push("/auth/login");
 			toast({
 				title: "Sucesso.",
 				description: "Usuário Criado.",
@@ -63,10 +63,12 @@ const Register = () => {
 						lastName={lastName}
 						email={email}
 						password={password}
+						adminCode={adminCode}
 						onFirstName={setFirstName}
 						onLastName={setLastName}
 						onEmail={setEmail}
 						onPassword={setPassword}
+						onAdminCode={setAdminCode}
 						isLoading={isLoading}
 						isSubmitted={isSubmitted}
 					/>

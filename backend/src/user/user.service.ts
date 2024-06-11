@@ -228,20 +228,25 @@ export class UserService {
 	}
 
 	async create(createUserDto: CreateUserDto) {
-		const data = {
-			...createUserDto,
-			password: await bcrypt.hash(createUserDto.password, 10),
-		};
+		if (createUserDto.adminCode === "1234") {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { adminCode, ...userData } = createUserDto;
+			const data = {
+				...userData,
+				password: await bcrypt.hash(createUserDto.password, 10),
+			};
 
-		const createdUser = await this.prisma.user.create({
-			data,
-		});
+			const createdUser = await this.prisma.user.create({
+				data,
+			});
 
-		return {
-			...createdUser,
-			password: undefined,
-		};
+			return {
+				...createdUser,
+				password: undefined,
+			};
+		}
 	}
+
 	async findAll() {
 		return await this.prisma.user.findMany();
 	}
