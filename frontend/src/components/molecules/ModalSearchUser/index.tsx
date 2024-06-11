@@ -53,7 +53,11 @@ export const ModalSearchUser = observer(
 		const { clientStore } = useStore();
 
 		const handleUser = async () => {
-			if (!admin) {
+			if (admin) {
+				clientStore.setAdminCode(adminCode);
+				await onSearchUser?.(adminCode);
+				return;
+			} else {
 				if (!isValidCPF(documentNumber)) {
 					toast({
 						title: "Erro",
@@ -65,27 +69,24 @@ export const ModalSearchUser = observer(
 					});
 					return;
 				}
-				return;
-			} else {
-				clientStore.setAdminCode(adminCode);
-			}
 
-			setIsLoading(true);
-			try {
-				await onSearchUser?.(admin ? adminCode : documentNumber);
-				isClose();
-			} catch (error) {
-				toast({
-					title: "Erro",
-					description: "Cliente não encontrado ou ocorreu um erro na busca.",
-					status: "error",
-					duration: 5000,
-					position: "top",
-					isClosable: true,
-				});
-				console.log(error);
-			} finally {
-				setIsLoading(false);
+				setIsLoading(true);
+				try {
+					await onSearchUser?.(documentNumber);
+					isClose();
+				} catch (error) {
+					toast({
+						title: "Erro",
+						description: "Cliente não encontrado ou ocorreu um erro na busca.",
+						status: "error",
+						duration: 5000,
+						position: "top",
+						isClosable: true,
+					});
+					console.log(error);
+				} finally {
+					setIsLoading(false);
+				}
 			}
 		};
 
