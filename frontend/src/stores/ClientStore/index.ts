@@ -26,9 +26,14 @@ export class ClientStore {
 	public installmentsTotalValue = new AttributeShelf<number>(0);
 	public paymentSlip = new AttributeShelf<string>("");
 	public paymentSlips = new AttributeShelf<apiTypes.PaymentSlip[]>([]);
+	public adminCode = new AttributeShelf<string>("");
 
 	constructor() {
 		makeObservable(this);
+	}
+
+	setAdminCode(adminCode: string) {
+		this.adminCode.set(adminCode);
 	}
 
 	setSelectedInstallments(installments: InstallmentType[]) {

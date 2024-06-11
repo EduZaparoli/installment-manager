@@ -2,6 +2,7 @@ import { AxiosInstance, RawAxiosRequestHeaders } from "axios";
 import apiClientService from "../APIClientService";
 import * as types from "./types";
 import { AuthStore, COOKIE_ACCESS_TOKEN_KEY } from "@/stores/AuthStore";
+import { clientStore } from "@/stores/ClientStore";
 
 class API {
 	constructor(private api: AxiosInstance) {}
@@ -170,6 +171,7 @@ class API {
 					lastName,
 					email,
 					password,
+					adminCode: clientStore.adminCode.value,
 				},
 				{
 					headers: this.baseHeaders(),
